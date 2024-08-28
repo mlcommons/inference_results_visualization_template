@@ -148,10 +148,10 @@ function constructTable(division, scenario, model, metric, result) {
 
         if (!(row["a#"] > 0)) {
             cores = row.Nodes * row.host_processors_per_node * row.host_processor_core_count;
-            acc_nums = row.Nodes * row["a#"];
             html += `<td>${row.Processor}</td>`;
             html += `<td>${cores}</td>`;
         } else {
+            acc_nums = row.Nodes * row["a#"];
             html += `<td>${row.Accelerator}</td>`;
             html += `<td>${acc_nums}</td>`;
         }
@@ -183,7 +183,7 @@ function constructTable(division, scenario, model, metric, result) {
                 html += `<td class='power' title='Total Watts: ${row.Power_Result.toFixed(0)}'>${power_efficiency}</td>`;
             } else if (metric === "performance_per_accelerator") {
                 //console.log(row.Performance_Result);
-                value = row["a#"] > 0 ? (row.Performance_Result / row["a#"]).toFixed(2) : "0";
+                value = row["a#"] > 0 ? (row.Performance_Result / (row['Nodes']*row["a#"])).toFixed(2) : "0";
                 html += `<td class='power'>${value}</td>`;
             } else if (metric === "performance_per_core") {
                 value = (row.Performance_Result / cores).toFixed(2);

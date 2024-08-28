@@ -140,10 +140,11 @@ function constructTable(division, scenario, model, metric, result) {
         html += "<tr>";
         const platform = row.Platform;
         const resultid = row.ID;
-        const location = `https://github.com/mlcommons/inference_results_${version}/tree/main/${row.Location}`;
-        // html += `<td title="${resultid}" class='location'><a target="_blank" href="${location}">${platform}</a></td>`;
+	let system_json_link = row['Details'].replace("/results/", "/systems/").replace("submissions_inference_4.0", "inference_results_v4.0") + ".json"
+        //const location = `https://github.com/mlcommons/inference_results_${version}/tree/main/${row.Location}`;
+        // html += `<td title="${resultid}" class='location'><a target="_blank" href="${system_json_link}">${platform}</a></td>`;
         html += `<td title="${platform}">${row.ID}</td>`;
-        html += `<td title="${platform}">${row.System}</td>`;
+        html += `<td title="${platform}"><a target="_blank" href="${system_json_link}">${row.System}</a></td>`;
         html += `<td>${row.Submitter}</td>`;
 
         if (!(row["a#"] > 0)) {

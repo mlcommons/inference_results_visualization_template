@@ -148,11 +148,12 @@ function constructTable(division, scenario, model, metric, result) {
 
         if (!(row["a#"] > 0)) {
             cores = row.Nodes * row.host_processors_per_node * row.host_processor_core_count;
+            acc_nums = row.Nodes * row["a#"];
             html += `<td>${row.Processor}</td>`;
             html += `<td>${cores}</td>`;
         } else {
             html += `<td>${row.Accelerator}</td>`;
-            html += `<td>${row["a#"]}</td>`;
+            html += `<td>${acc_nums}</td>`;
         }
 
         html += `<td>${row.Software}</td>`;

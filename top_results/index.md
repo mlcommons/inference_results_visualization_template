@@ -49,7 +49,8 @@ hide:
         <div class="form-field">
             <label for="availability">Availability</label>
             <select id="availability" name="availability" class="col myFilter">
-                <option value='available' selected >Available</option>
+                <option value='all' selected>All</option>
+                <option value='available'>Available</option>
                 <option value='preview' >Preview</option>
                 <option value='rdi' >RDI</option>
             </select>

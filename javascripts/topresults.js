@@ -60,8 +60,8 @@ $(document).ready(function() {
     readAllData().then(function(global_data) {
         //console.log(allData);
         allData = global_data;
-        keys = [ "Suite", "Category", "Availability" ];
-        values = [ "datacenter", "closed", "available" ];
+        keys = [ "Suite", "Category" ];
+        values = [ "datacenter", "closed" ];
         myData = filterData(allData, keys, values);
         var models = getUniqueValues(myData, "Model");
         scenario = "Offline";
@@ -220,6 +220,10 @@ $(document).ready(function() {
         var scenario = $('#scenario').val();
         keys = [ "Suite", "Category", "Availability" ];
         values = [ category, division, availability ];
+        if(availability != 'all') {
+            keys.push("Availability");
+            values.push(availability);
+        }
         //console.log(allData);
         myData = filterData(allData, keys, values);
         //console.log(scenario);
@@ -286,8 +290,13 @@ $(document).ready(function() {
              perfcolumnindex+=2;
         }
         //console.log(category+division+availability+scenario+metric+model);
-        keys = [ "Suite", "Category", "Availability" ];
-        values = [ category, division, availability ];
+        keys = [ "Suite", "Category" ];
+        values = [ category, division ];
+
+        if(availability != 'all') {
+            keys.push('Availability');
+            values.push(availability);
+        }
         //console.log(allData);
         myData = filterData(allData, keys, values);
         //console.log(scenario);

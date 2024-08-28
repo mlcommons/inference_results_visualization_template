@@ -1,4 +1,3 @@
-var result_version="v4.0";
 var scenarioUnits = {};
 var accuracyUnits = {};
 var validScenarios = {

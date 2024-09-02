@@ -15,12 +15,11 @@ models_edge = [];
 const dbName = "mlperf_inference";
 //config results_version; defined in config.js
 //const dbVersion = 4; defined in config.js
-var results_version = (results_version === undefined)? "v4.1": results_version;
 const objStore = "inference_results_"+results_version; //results_version defined in config.js
 
 async function fetchAndStoreData(db) {
     try {
-        const data = await $.getJSON("https://raw.githubusercontent.com/GATEOverflow/inference_results_"+result_version+"/main/summary_results.json");
+        const data = await $.getJSON("https://raw.githubusercontent.com/GATEOverflow/inference_results_"+results_version+"/main/summary_results.json");
 
         // Begin a transaction to save data in IndexedDB
         const transaction = db.transaction([objStore], "readwrite");

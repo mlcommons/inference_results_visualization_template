@@ -25,15 +25,30 @@ $('#printChart3').hide();
 $('#chartContainer2').hide();
 $('#printChart2').hide();
 
+function animateToTop() {
+$('html, body').animate({
+            scrollTop: 0
+        }, 'slow');
+}
 function updateContent(myData) {
     //$("#topresults_table_wrapper").focus();
     model = $("#model").val();
     scenario = $("#scenario").val();
     division = $("#division").val(); 
     category = $("#category").val(); 
-    metric = $("#metric").val(); 
+    metric = $("#metric").val();
+    metric_str = metric.replace("_", " ");
     //updateScenarioUnits(myData);
-    $("#topresults_heading").text(`${model} results in ${category} category, ${division} division`);
+    if(myData.length == 0) {
+        $("#topresults_heading").text(`No ${model} results in ${category} category, ${division} division for ${metric_str} metric`);
+        $("#topresults_table_wrapper").hide();
+        $(".chart").hide();
+        $("button.print").hide();
+        animateToTop();
+        return;
+    }
+    $("#topresults_table_wrapper").show();
+    $("#topresults_heading").text(`${model} results in ${category} category, ${division} division, ${scenario} scenario for ${metric_str} metric`);
     tablehtml = constructTable(division, scenario, model, metric, myData);
     //console.log(division+scenario);
     //console.log(tablehtml);
@@ -50,9 +65,7 @@ function updateContent(myData) {
         //drawPowerChart();
         drawPerfCharts();
     });
-$('html, body').animate({
-            scrollTop: 0
-        }, 'slow');
+    animateToTop();
 }
 
 $(document).ready(function() {

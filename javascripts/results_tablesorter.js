@@ -41,6 +41,7 @@ $(document).ready(function() {
         readAllData().then(function(allData) {
             //  console.log(allData);
             reConstructTables(category, division, with_power[0], allData);
+            reConstructAccvsPerfChart(category, division, with_power[0], allData);
             constructChartFromSummary(allData, category, division, with_power[0]);
         }).catch(function(error) {
             console.error(error);
@@ -572,7 +573,7 @@ function constructOpenTableModel(model, category, with_power, availability, myda
     //console.log(html);
     return html;
 }
-function constructOpenTable(category, with_power, availability, data) {
+function constructOpenTable(category, division, with_power, availability, data) {
     models = []
     if (category == "datacenter") {
         models = models_datacenter;
@@ -583,6 +584,11 @@ function constructOpenTable(category, with_power, availability, data) {
     html = ''
     models.forEach(function(model, index) {
         html += constructOpenTableModel(model, category, with_power, availability, data);
+        if (category === "datacenter" && division === "open") {
+            html += `
+                    <div id="AccVsPerfScatterPlot_${model}_${division}_${category}_${availability}" style="height: 370px; width: 100%; display: none; "></div>
+                    `;   
+        }
     });
     //console.log(with_power);
     // html += "</table>";
@@ -603,7 +609,7 @@ function constructTable(category, division, with_power, availability, data) {
     }
     var needsFooter = Object.keys(mydata).length > 5;
     if(division == "open") {
-        html =  constructOpenTable(category, with_power, availability, mydata);
+        html =  constructOpenTable(category, division, with_power, availability, mydata);
         //console.log(html);
         return html;
     }

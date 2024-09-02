@@ -115,8 +115,8 @@ $(document).ready(function() {
         */
         readAllData().then(function(allData) {
 //            console.log(allData);
-            sysversion1 = result_version;
-            sysversion2 = result_version;
+            sysversion1 = results_version;
+            sysversion2 = results_version;
             reConstructTables(system1, sysversion1, system2, sysversion2, selected_models, allData);
         }).catch(function(error) {
             console.error(error);

@@ -306,7 +306,7 @@ function constructSummaryTable(data, category, division, with_power) {
 }
 
 function get_scenario_td_data(data, scenario, with_power, accuracy=false) {
-    let location_pre = `https://github.com/mlcommons/inference_results_${result_version}/tree/main/`;
+    let location_pre = `https://github.com/mlcommons/inference_results_${results_version}/tree/main/`;
     let result_link_text = ``;
 
     if(!data || !data.hasOwnProperty(scenario)) {

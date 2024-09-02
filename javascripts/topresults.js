@@ -7,7 +7,7 @@ $( document ).on( "click", "#results thead th", function() {
 var device_column_name = "Accelerator";
 var device_count_column_name = "#a";
 var additional_metric_column_name = "";
-var version = result_version;
+var version = results_version;
 var openmodel=false;
 var sortcolumnindex = 6;
 var perfcolumnindex = 7; // starting from 1

@@ -15,7 +15,8 @@ models_edge = [];
 const dbName = "mlperf_inference";
 //config results_version; defined in config.js
 //const dbVersion = 4; defined in config.js
-const objStore = "inference_results";
+var results_version = (results_version === undefined)? "v4.1": results_version;
+const objStore = "inference_results_"+results_version; //results_version defined in config.js
 
 async function fetchAndStoreData(db) {
     try {

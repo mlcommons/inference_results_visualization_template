@@ -12,10 +12,9 @@ models_edge_ = [ "gptj-99", "gptj-99.9", "bert-99", "stable-diffusion-xl", "reti
 models_datacenter = [];
 models_edge = [];
 
-const dbName = "mlperf_inference";
-//config results_version; defined in config.js
+const dbName = "mlperf_inference_" + results_version;//results_version defined in config.js
 //const dbVersion = 4; defined in config.js
-const objStore = "inference_results_"+results_version; //results_version defined in config.js
+const objStore = "inference_results";
 
 async function fetchAndStoreData(db) {
     try {

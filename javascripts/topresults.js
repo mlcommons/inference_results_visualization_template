@@ -218,8 +218,8 @@ $(document).ready(function() {
         var availability = $('#availability').val();
         var model = $('#model').val();
         var scenario = $('#scenario').val();
-        keys = [ "Suite", "Category", "Availability" ];
-        values = [ category, division, availability ];
+        keys = [ "Suite", "Category" ];
+        values = [ category, division ];
         if(availability != 'all') {
             keys.push("Availability");
             values.push(availability);
@@ -244,8 +244,12 @@ $(document).ready(function() {
         var division = $('#division').val();
         var availability = $('#availability').val();
         var model = $('#model').val();
-        keys = [ "Suite", "Category", "Availability", "Model" ];
-        values = [ category, division, availability, model ];
+        keys = [ "Suite", "Category", "Model" ];
+        values = [ category, division, model ];
+        if(availability != 'all') {
+            keys.push("Availability");
+            values.push(availability);
+        }
         //console.log(allData);
         myData = filterData(allData, keys, values);
         //console.log(category+division+scenario);

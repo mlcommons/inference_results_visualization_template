@@ -41,7 +41,9 @@ $(document).ready(function() {
         readAllData().then(function(allData) {
             //  console.log(allData);
             reConstructTables(category, division, with_power[0], allData);
-            reConstructAccvsPerfChart(category, division, with_power[0], allData);
+            if (division === "open") {
+                reConstructAccvsPerfChart(category);
+            }
             constructChartFromSummary(allData, category, division, with_power[0]);
         }).catch(function(error) {
             console.error(error);
@@ -573,7 +575,7 @@ function constructOpenTableModel(model, category, with_power, availability, myda
     //console.log(html);
     return html;
 }
-function constructOpenTable(category, division, with_power, availability, data) {
+function constructOpenTable(category, with_power, availability, data) {
     models = []
     if (category == "datacenter") {
         models = models_datacenter;
@@ -584,9 +586,9 @@ function constructOpenTable(category, division, with_power, availability, data) 
     html = ''
     models.forEach(function(model, index) {
         html += constructOpenTableModel(model, category, with_power, availability, data);
-        if (category === "datacenter" && division === "open") {
+        if (category === "datacenter") {
             html += `
-                    <div id="AccVsPerfScatterPlot_${model}_${division}_${category}_${availability}" style="height: 370px; width: 100%; display: none; "></div>
+                    <div id="AccVsPerfScatterPlot_${model}_open_${category}_${availability}" style="height: 370px; width: 100%; display: none; "></div>
                     `;   
         }
     });
@@ -609,7 +611,7 @@ function constructTable(category, division, with_power, availability, data) {
     }
     var needsFooter = Object.keys(mydata).length > 5;
     if(division == "open") {
-        html =  constructOpenTable(category, division, with_power, availability, mydata);
+        html =  constructOpenTable(category, with_power, availability, mydata);
         //console.log(html);
         return html;
     }

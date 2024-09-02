@@ -1,19 +1,13 @@
-function reConstructAccvsPerfChart(category, division, with_power, data) {
+function reConstructAccvsPerfChart(category) {
     availabilities = [ "Available", "Preview", "RDI" ]; 
     availabilities.forEach(function(availability) {
         // filtered data as per the user choice
         //console.log(filteredResults.length);
-        constructAccvsPerfChart(category, division, with_power, availability);
+        drawAccvsPerfPlot(category, availability);
     });
 }
 
-function constructAccvsPerfChart(category, division, with_power, availability) {
-    if(division == "open") {
-        drawAccvsPerfPlot(category, division, with_power, availability);
-    }
-}
-
-function drawAccvsPerfPlot(category, division, with_power, availability) {
+function drawAccvsPerfPlot(category, availability) {
     // the data here is the preprocessed data through function preprocessData
     models = []
     if (category == "datacenter") {
@@ -28,9 +22,9 @@ function drawAccvsPerfPlot(category, division, with_power, availability) {
         if (accuracyUnits.hasOwnProperty(model)) {
             accuracyMetric = accuracyUnits[model].split(",")[0].trim();
         }
-        if (category === "datacenter" && division === "open") {
+        if (category === "datacenter") {
             let extractedData = extractTableDataForAccVsPerf(model, availability);
-            const chartContainer = document.getElementById(`AccVsPerfScatterPlot_${model}_${division}_${category}_${availability}`);
+            const chartContainer = document.getElementById(`AccVsPerfScatterPlot_${model}_open_${category}_${availability}`);
             if (extractedData.length === 0) {
                 if (chartContainer) {
                     chartContainer.style.display = 'none'; // hide the div
@@ -42,7 +36,7 @@ function drawAccvsPerfPlot(category, division, with_power, availability) {
             }
             // let filteredData = filterForAccvsPerfPlot(data, model, category, division, accuracyMetric);
             if (extractedData.length !== 0) {
-                let chart = new CanvasJS.Chart(`AccVsPerfScatterPlot_${model}_${division}_${category}_${availability}`, {
+                let chart = new CanvasJS.Chart(`AccVsPerfScatterPlot_${model}_open_${category}_${availability}`, {
                     animationEnabled: true,
                     theme: "light2",
                     title:{

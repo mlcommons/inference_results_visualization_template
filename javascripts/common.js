@@ -65,12 +65,6 @@ function readAllData() {
         request.onsuccess = async function(event) {
             const db = event.target.result;
 
-            // Ensure the object store exists
-            if (!db.objectStoreNames.contains(objStore)) {
-                const objectStore = db.createObjectStore(objStore, { autoIncrement: true });
-                console.log("Object store created");
-                await fetchAndStoreData(db);
-            }
 
             // Start a transaction to read data
             const transaction = db.transaction([objStore], "readonly");

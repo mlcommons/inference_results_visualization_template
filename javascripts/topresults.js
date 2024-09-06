@@ -43,6 +43,7 @@ function updateContent(myData) {
         $("#topresults_heading").text(`No ${model} results in ${category} category, ${division} division for ${metric_str} metric`);
         $("#topresults_table_wrapper").hide();
         $(".chart").hide();
+        $(".btn-chart").hide();
         $("button.print").hide();
         animateToTop();
         return;
@@ -69,41 +70,6 @@ function updateContent(myData) {
 }
 
 $(document).ready(function() {
-    allData = [];
-    readAllData().then(function(global_data) {
-        //console.log(allData);
-        allData = global_data;
-        keys = [ "Suite", "Category" ];
-        values = [ "datacenter", "closed" ];
-        myData = filterData(allData, keys, values);
-        var models = getUniqueValues(myData, "Model");
-        scenario = "Offline";
-        division = "closed"; 
-        category = "datacenter";
-        keys = ["Model", "Scenario"];
-        values = ["llama2-70b-99.9", scenario];
-        myData = filterData(myData, keys, values);
-        //console.log(myData);
-        $("#model").append('<option selected value="llama2-70b-99.9">Llama 2</option>');
-        var devices = getUniqueValuesCombined(myData, " x ", [ "Accelerator", "a#" ]);
-        var platforms = getUniqueValuesCombined(myData, " : ", [ "version", "Platform" ]);
-        var scenarios = validScenarios["datacenter"];// getUniqueValues(myData, "Scenario");
-        model = $("#model").val();
-        updateScenarioUnits(myData);
-        buildSelectOption(models, "model", model);
-        buildSelectOption(scenarios, "scenario", scenario);
-        platforms.unshift("All systems");
-        buildSelectOption(platforms, "filter_systems", "All systems");
-        devices.unshift("All devices");
-        buildSelectOption(devices, "filter_devices", "All devices");
-        charttitlesuffix = ` for ${model} ${scenario} scenario in ${division} division ${category} category`;
-        chart1title = "Performance " + charttitlesuffix;
-       // chart2title = "Performance per accelerator " + charttitlesuffix;
-        //chart2ytitle = "Samples per second per accelerator";
-        updateContent(myData);
-    }).catch(function(error) {
-        console.error(error);
-    });
 
     //console.log("The page is fully loaded.");
 });
@@ -220,11 +186,52 @@ function constructTable(division, scenario, model, metric, result) {
 }
 
 
-
+function updateFilters(myData) {
+        var platforms = getUniqueValuesCombined(myData, " : ", [ "version", "Platform" ]);
+        platforms.unshift("All systems");
+        buildSelectOption(platforms, "filter_systems", "All systems");
+	var devices = getUniqueValuesCombined(myData, " x ", [ "Accelerator", "a#" ]);
+        devices.unshift("All devices");
+        buildSelectOption(devices, "filter_devices", "All devices");
+}
 
 
 
 $(document).ready(function() {
+    allData = [];
+    readAllData().then(function(global_data) {
+        //console.log(allData);
+        allData = global_data;
+        keys = [ "Suite", "Category" ];
+        values = [ "datacenter", "closed" ];
+        myData = filterData(allData, keys, values);
+        var models = getUniqueValues(myData, "Model");
+        scenario = "Offline";
+        division = "closed"; 
+        category = "datacenter";
+        keys = ["Model", "Scenario"];
+        values = ["llama2-70b-99.9", scenario];
+        myData = filterData(myData, keys, values);
+        //console.log(myData);
+        $("#model").append('<option selected value="llama2-70b-99.9">Llama 2</option>');
+        var scenarios = validScenarios["datacenter"];// getUniqueValues(myData, "Scenario");
+        model = $("#model").val();
+        updateScenarioUnits(myData);
+        buildSelectOption(models, "model", model);
+        buildSelectOption(scenarios, "scenario", scenario);
+
+	updateFilters(myData);
+
+	charttitlesuffix = ` for ${model} ${scenario} scenario in ${division} division ${category} category`;
+        chart1title = "Performance " + charttitlesuffix;
+       // chart2title = "Performance per accelerator " + charttitlesuffix;
+        //chart2ytitle = "Samples per second per accelerator";
+        updateContent(myData);
+    }).catch(function(error) {
+        console.error(error);
+    });
+
+
     $('.myFilter').on('change', function() {
         var category = $('#category').val();
         var division = $('#division').val();
@@ -241,16 +248,13 @@ $(document).ready(function() {
         myData = filterData(allData, keys, values);
         //console.log(scenario);
         var models = getUniqueValues(myData, "Model");
-        var devices = getUniqueValuesCombined(myData, " x ", [ "Accelerator", "a#" ]);
-        var platforms = getUniqueValuesCombined(myData, " : ", [ "version", "Platform" ]);
         var scenarios = validScenarios[category];// getUniqueValues(myData, "Scenario");
-        platforms.unshift("All systems");
-        devices.unshift("All devices");
-        buildSelectOption(models, "model", model);
+	buildSelectOption(models, "model", model);
         buildSelectOption(scenarios, "scenario", scenario);
-        buildSelectOption(platforms, "filter_systems", "All systems");
-        buildSelectOption(devices, "filter_devices", "All devices");
+        
+	updateFilters(myData);
     });
+
 
     $('#model').on('change', function() {
         var category = $('#category').val();
@@ -268,6 +272,7 @@ $(document).ready(function() {
         //console.log(category+division+scenario);
         var scenarios = getUniqueValues(myData, "Scenario");
         buildSelectOption(scenarios, "scenario", scenario);
+	updateFilters(myData);
     });
 
     $('#resultSelectionForm').submit(function(event) {

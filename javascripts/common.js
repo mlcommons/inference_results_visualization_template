@@ -16,9 +16,13 @@ const dbName = "mlperf_inference_" + results_version;//results_version defined i
 //const dbVersion = 4; defined in config.js
 const objStore = "inference_results";
 
+repo_name = repo_name || "inference_results_"+results_version;
+repo_owner = repo_owner || "GATEOverflow";
+repo_branch = repo_branch || "main";
+
 async function fetchAndStoreData(db) {
     try {
-        const data = await $.getJSON("https://raw.githubusercontent.com/GATEOverflow/inference_results_"+results_version+"/main/summary_results.json");
+        const data = await $.getJSON("https://raw.githubusercontent.com/" + repo_owner + "/" + repo_name + "/" + repo_branch + "/summary_results.json");
 
         // Begin a transaction to save data in IndexedDB
         const transaction = db.transaction([objStore], "readwrite");

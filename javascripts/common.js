@@ -12,13 +12,13 @@ models_edge_ = [ "gptj-99", "gptj-99.9", "bert-99", "stable-diffusion-xl", "reti
 models_datacenter = [];
 models_edge = [];
 
-const dbName = "mlperf_inference_" + results_version;//results_version defined in config.js
 //const dbVersion = 4; defined in config.js
 const objStore = "inference_results";
 
 repo_name = repo_name || "inference_results_"+results_version;
 repo_owner = repo_owner || "GATEOverflow";
 repo_branch = repo_branch || "main";
+const dbName = repo_owner + "_" + repo_name + "_" + repo_branch;
 
 async function fetchAndStoreData(db) {
     try {

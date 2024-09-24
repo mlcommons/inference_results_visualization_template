@@ -41,6 +41,9 @@ $(document).ready(function() {
         readAllData().then(function(allData) {
             //  console.log(allData);
             reConstructTables(category, division, with_power[0], allData);
+            if (division === "open") {
+                reConstructAccvsPerfChart(category);
+            }
             constructChartFromSummary(allData, category, division, with_power[0]);
         }).catch(function(error) {
             console.error(error);
@@ -623,6 +626,11 @@ function constructOpenTable(category, with_power, availability, data) {
     html = ''
     models.forEach(function(model, index) {
         html += constructOpenTableModel(model, category, with_power, availability, data);
+        if (category === "datacenter") {
+            html += `
+                    <div id="AccVsPerfScatterPlot_${model}_open_${category}_${availability}" style="height: 370px; width: 100%; display: none; "></div>
+                    `;   
+        }
     });
     //console.log(with_power);
     // html += "</table>";

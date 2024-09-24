@@ -146,24 +146,64 @@ function drawChartResults(){
 }
 
 function reConstructTables(category, division, with_power, data){
-    availabilities = [ "Available", "Preview", "RDI" ]; 
+    availabilities = [ "Available", "Preview", "RDI" ];
+    total_count = 0;
+    if(with_power) {
+        result_prefix = "power"
+    }
+    else {
+        result_prefix = "performance"
+    }
     availabilities.forEach(function(availability) {
         // filtered data as per the user choice
         const filteredResults = filterDataResultsTable(category, division, with_power, availability, data);
-        //console.log(filteredResults.length);
-        var html_table = constructTable(category, division, with_power, availability, filteredResults);
-        var tableHeading = `${category} Category: ${availability} submissions in ${division} division`;
+        var html_table = null;
+        var tableHeading = null;
+        //console.log(filteredResults);
+        total_count += filteredResults.length;
+        if(filteredResults.length == 0) {
+            tableHeading = `${category} Category: No ${availability} ${result_prefix} submissions in ${division} division`;
+        }
+        else {
+            //console.log(filteredResults.length);
+            html_table = constructTable(category, division, with_power, availability, filteredResults);
+            tableHeading = `${category} Category: ${availability} ${result_prefix} submissions in ${division} division`;
+        }
         // replacing the old table with the newly constructed one
         var elemIdTable = `results_table_${availability.toLowerCase()}` 
         var elemIdTableHeading = `results_heading_${availability.toLowerCase()}`
+        $("#"+elemIdTableHeading).html(tableHeading);
+        $("#"+elemIdTableHeading).show();
+
         if (html_table) {
-            document.getElementById(elemIdTable).innerHTML = html_table;
-            document.getElementById(elemIdTableHeading).innerHTML = tableHeading;
+            $("#"+elemIdTable).html(html_table);
+            $("#"+elemIdTable).show();
+        }
+        else {
+            $("#"+elemIdTable).hide();
         }
     });
-    var countResultsTable = constructSummaryTable(data, category, division, with_power)
     var elemIdTableSummary = `results_summary`
-    document.getElementById(elemIdTableSummary).innerHTML = countResultsTable;
+    if(total_count == 0) {
+        tableHeading = `${category} Category: No ${result_prefix} submissions in ${division} division`;
+        $("#results_heading_available").html(tableHeading);
+        $("#results_heading_preview").hide();
+        $("#results_heading_RDI").hide();
+        $("#"+elemIdTableSummary).hide();
+        $(".counttable_wrapper").hide();
+        $("#submittervssubmissionchartContainer").hide();
+        $("#modelvssubmissionchartContainer").hide();
+        $("#count_heading").hide();
+    }
+    else {
+        var countResultsTable = constructSummaryTable(data, category, division, with_power)
+        $("#"+elemIdTableSummary).html(countResultsTable);
+        $("#"+elemIdTableSummary).show();
+        $(".counttable_wrapper").show();
+        $("#submittervssubmissionchartContainer").show();
+        $("#modelvssubmissionchartContainer").show();
+        $("#count_heading").show();
+    }
     $('table').tablesorter();
     $("table").trigger("updateAll");
 }

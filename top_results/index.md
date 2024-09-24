@@ -14,14 +14,14 @@ hide:
 
 <hr>
 
-  <div id="chartContainer1" class="bgtext" style="height: 370px; width: 100%;"></div>
-<button class="btn btn-primary"  id="printChart1">Download</button>
+  <div id="chartContainer1" class="bgtext chart" style="height: 370px; width: 100%;"></div>
+<button class="btn btn-primary btn-chart"  id="printChart1">Download</button>
 
-<div id="chartContainer2" class="bgtext" style="height: 370px; width: 100%;"></div>
-<button class="btn btn-primary"  id="printChart2">Download</button>
+<div id="chartContainer2" class="bgtext chart" style="height: 370px; width: 100%;"></div>
+<button class="btn btn-primary btn-chart"  id="printChart2">Download</button>
 
-<div id="chartContainer3" class="bgtext" style="height: 370px; width: 100%;"></div>
-<button class="btn btn-primary"  id="printChart3">Download</button>
+<div id="chartContainer3" class="bgtext chart" style="height: 370px; width: 100%;"></div>
+<button class="btn btn-primary btn-chart"  id="printChart3">Download</button>
 
 
 

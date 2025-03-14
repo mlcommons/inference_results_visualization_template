@@ -738,7 +738,7 @@ for entry in data:
         if entry['Category'] not in tables[details][category]:
             tables[details][category][entry['Category']] = {}
 
-        if entry['Model'] not in tables[details][category][entry['Category']]:
+        if entry['UsedModel'] not in tables[details][category][entry['Category']]:
             tables[details][category][entry['Category']] [entry['UsedModel']] = {}
         if entry['Scenario'] not in tables[details][category][entry['Category']][entry['UsedModel']]:
             tables[details][category][entry['Category']][entry['UsedModel']][entry['Scenario']] = entry

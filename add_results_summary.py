@@ -780,7 +780,13 @@ for details, entries in tables.items():
             for model in data:
                         
                 #if model in data:
-                    mlperf_model = data[model]["Offline"]["Model"]
+                    mlperf_model = None
+                    for scen in [ "Offline", "Server", "SingleStream", "MultiStream" ]:
+                        if scen in data[model]:
+                            mlperf_model = data[model][scen]["Model"]
+                            break
+                    if not mlperf_model:
+                        continue
                     html_table += f"""<tr><td class="model">{model}</td>"""
                     
                     #version = data[model]["Offline"]["version"]

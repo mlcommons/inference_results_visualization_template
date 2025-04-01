@@ -787,7 +787,7 @@ for details, entries in tables.items():
                             break
                     if not mlperf_model:
                         continue
-                    
+
                     html_table += f"""<tr><td class="model">{model}</td>"""
                     
                     #version = data[model]["Offline"]["version"]

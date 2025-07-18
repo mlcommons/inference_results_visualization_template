@@ -12,9 +12,12 @@ if [ ! -e overrides ]; then
     test $? -eq 0 || exit $?
 fi
 
-repo_owner=${INFERENCE_RESULTS_REPO_OWNER:-mlcommons}
-repo_branch=${INFERENCE_RESULTS_REPO_BRANCH:-main}
-repo_name=${INFERENCE_RESULTS_REPO_NAME:-inference_results_${INFERENCE_RESULTS_VERSION}}
+repo_owner=${INFERENCE_RESULTS_REPO_OWNER:${AUTOMOTIVE_RESULTS_REPO_OWNER:-mlcommons}}
+repo_branch=${INFERENCE_RESULTS_REPO_BRANCH:${AUTOMOTIVE_RESULTS_REPO_BRANCH:-main}}
+repo_name=${INFERENCE_RESULTS_REPO_NAME:-inference_results_${INFERENCE_RESULTS_VERSION:-AUTOMOTIVE_RESULTS_VERSION}}
+echo "repo owner: ${repo_owner}"
+echo "repo branch: ${repo_branch}"
+echo "repo name: ${repo_name}"
 ver_num=$(cat dbversion)
 let ver_num++
 
@@ -22,17 +25,20 @@ rm -f docs/javascripts/config.js
 
 if [ ! -e docs/javascripts/config.js ]; then
     if [ -n "${INFERENCE_RESULTS_VERSION}" ]; then
-         echo "const results_version=\"${INFERENCE_RESULTS_VERSION}\";" > docs/javascripts/config.js;
-         echo "var repo_owner=\"${repo_owner}\";" >> docs/javascripts/config.js;
-         echo "var repo_branch=\"${repo_branch}\";" >> docs/javascripts/config.js;
-         echo "var repo_name=\"${repo_name}\";" >> docs/javascripts/config.js;
-         echo "const dbVersion =\"${ver_num}\";" >> docs/javascripts/config.js;
-         echo "const default_category =\"${default_category}\";" >> docs/javascripts/config.js;
-         echo "const default_division =\"${default_division}\";" >> docs/javascripts/config.js;
+        results_version="${INFERENCE_RESULTS_VERSION}"
+    elif [ -n "${AUTOMOTIVE_RESULTS_VERSION}" ]; then
+        results_version="${AUTOMOTIVE_RESULTS_VERSION}"
     else
-       echo "Please export INFERENCE_RESULTS_VERSION=v4.1 or the corresponding version";
-       exit 1
+        echo "Please export INFERENCE_RESULTS_VERSION or AUTOMOTIVE_RESULTS_VERSION (e.g., v4.1)"
+        exit 1
     fi
+    echo "const results_version=\"${results_version}\";" > docs/javascripts/config.js
+    echo "var repo_owner=\"${repo_owner}\";" >> docs/javascripts/config.js
+    echo "var repo_branch=\"${repo_branch}\";" >> docs/javascripts/config.js
+    echo "var repo_name=\"${repo_name}\";" >> docs/javascripts/config.js
+    echo "const dbVersion =\"${ver_num}\";" >> docs/javascripts/config.js
+    echo "const default_category =\"${default_category}\";" >> docs/javascripts/config.js
+    echo "const default_division =\"${default_division}\";" >> docs/javascripts/config.js
 fi
 
 if [ ! -e docs/thirdparty/tablesorter ]; then
@@ -55,15 +61,27 @@ if [ ! -e add_results_summary.py ]; then
     test $? -eq 0 || exit $?
 fi
 
+if [ -n "${INFERENCE_RESULTS_VERSION}" ]; then
+    repo_to_clone="inference"
+elif [ -n "${AUTOMOTIVE_RESULTS_VERSION}" ]; then
+    repo_to_clone="mlperf_automotive"
+else
+    echo "Please export either INFERENCE_RESULTS_VERSION or AUTOMOTIVE_RESULTS_VERSION."
+    exit 1
+fi
+
+export PYTHONPATH="$repo_to_clone/tools/submission:$PYTHONPATH"
+
+if [ ! -e "${target_dir}" ]; then
+    git clone https://github.com/mlcommons/${repo_to_clone} "${repo_to_clone}" --depth=1
+    test $? -eq 0 || exit $?
+fi
+
+
 python3 process.py
 test $? -eq 0 || exit $?
 python3 process_results_table.py
 test $? -eq 0 || exit $?
-
-if [ ! -e inference ]; then
-    git clone https://github.com/mlcommons/inference --depth=1
-    test $? -eq 0 || exit $?
-fi
 
 cp summary_results.json docs/javascripts/
 

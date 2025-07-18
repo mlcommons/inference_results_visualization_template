@@ -17,8 +17,6 @@
 import json
 import os
 import time
-import sys
-sys.path.insert(0, os.path.join("inference", "tools", "submission"))
 import submission_checker as checker # noqa
 
 with open('summary_results.json') as f:
@@ -722,14 +720,17 @@ def get_table_header(division, category):
 
 # Initialize a dictionary to organize the data by 'Details'
 tables = {}
-version = os.environ.get('INFERENCE_RESULTS_VERSION')
+version = os.environ.get('INFERENCE_RESULTS_VERSION', os.environ.get('AUTOMOTIVE_RESULTS_VERSION'))
+if os.environ.get('AUTOMOTIVE_RESULTS_VERSION', "") != "" and os.environ.get('INFERENCE_RESULTS_VERSION', "") == "":
+    categories = [ "adas" ]
+else:
+    categories = [ "edge", "datacenter" ]
 
 # Populate the dictionary with data
 for entry in data:
     details = entry['Details']
     if details not in tables:
         tables[details] = {}
-    categories = [ "edge", "datacenter" ]
     for category in categories:
         if category not in entry['Suite']:
             continue
@@ -906,9 +907,9 @@ for details, entries in tables.items():
 </main>
 """
 
-            repo_name = os.environ.get('INFERENCE_RESULTS_REPO_NAME', "mlperf_inference_test_submissions_v5.0")
-            repo_branch = os.environ.get('INFERENCE_RESULTS_REPO_BRANCH', "main")
-            repo_owner = os.environ.get('INFERENCE_RESULTS_REPO_OWNER', 'mlcommons')
+            repo_name = os.environ.get('INFERENCE_RESULTS_REPO_NAME', os.environ.get('AUTOMOTIVE_RESULTS_REPO_NAME', "mlperf_inference_test_submissions_v5.0"))
+            repo_branch = os.environ.get('INFERENCE_RESULTS_REPO_BRANCH', os.environ.get('AUTOMOTIVE_RESULTS_REPO_BRANCH', "main"))
+            repo_owner = os.environ.get('INFERENCE_RESULTS_REPO_OWNER', os.environ.get('AUTOMOTIVE_RESULTS_REPO_OWNER', 'mlcommons'))
 
             readme_content = f"""See the HTML preview [here](https://htmlpreview.github.io/?https://github.com/{repo_owner}/{repo_name}/blob/{repo_branch}/{division}/{submitter}/results/{sut_name}/summary.html)
 {html_table}

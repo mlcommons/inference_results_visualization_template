@@ -21,6 +21,7 @@ import submission_checker as checker # noqa
 
 with open('summary_results.json') as f:
     data = json.load(f)
+
 #print(models_all)
 #print(platforms)
 
@@ -356,7 +357,7 @@ padding-left: 20px!important;
 
     html_header = f"""
 <head>
-<title>MLPerf Inference {version}</title>
+<title>MLPerf Automotive {version}</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, interactive-widget=resizes-content">
 <style type="text/css">
 {css}
@@ -408,8 +409,7 @@ def get_month_year(version: str) -> str:
     """
     # Define version-to-month mapping
     version_month_map = {
-        "0": "February",
-        "1": "August"
+        "5": "June"
     }
     
     try:
@@ -421,16 +421,18 @@ def get_month_year(version: str) -> str:
         minor = minor.strip()
         
         if minor not in version_month_map:
-            if os.environ.get('AUTOMOTIVE_RESULTS_VERSION', '') != '':
-                version_month_map["5"] = "June"
-            else:
-                raise ValueError("Invalid minor version. Expected '0' or '1'.")
+            raise ValueError("Invalid minor version. Expected '0.5'.") # To be  modified after v1.0
         
-        if not (1 <= major <= 9):
+        if not (0 <= major <= 9):
             raise ValueError("Major version out of range (expected 1-9).")
         
+        if major == 0:
+            add_year = major
+        else:
+            add_year = major - 1
+
         # Calculate year, starting from 2024 for v1.0
-        year = 2021 + (major - 1)
+        year = 2025 + add_year
         month = version_month_map[minor]
         
         return month, year
@@ -456,6 +458,7 @@ def get_header_table(system_json, version):
         availability_string = f"""Research and Internal {availability_string}"""
     '''
     availability_string = status
+    print(get_month_year(version))
     month, year = get_month_year(version)
 
     html =  f"""<div class="titlebarcontainer">
@@ -695,19 +698,11 @@ def get_table_header(division, category):
 <th rowspan="2" class="th-parent">Model</th>
 <th rowspan="2" class="th-parent">Accuracy Target</th>
 """
-    if "datacenter" in category:
-        num_scenarios += 1
-        html_table_head += f"""<th colspan="{colspan}">Server</th>
+
+    html_table_head += f"""<th colspan="{colspan}">SingleStream</th>
+    <th colspan="{colspan}">ConstantStream</th>
 """
 
-    html_table_head += f"""<th colspan="{colspan}">Offline</th>
-"""
-
-    if "edge" in category:
-        num_scenarios += 2
-        html_table_head += f"""<th colspan="{colspan}">SingleStream</th>
-<th colspan="{colspan}">MultiStream</th>
-"""
     html_table_head += f"""</tr>
 <tr>
 """
@@ -723,11 +718,8 @@ def get_table_header(division, category):
 
 # Initialize a dictionary to organize the data by 'Details'
 tables = {}
-version = os.environ.get('INFERENCE_RESULTS_VERSION', os.environ.get('AUTOMOTIVE_RESULTS_VERSION'))
-if os.environ.get('AUTOMOTIVE_RESULTS_VERSION', "") != "" and os.environ.get('INFERENCE_RESULTS_VERSION', "") == "":
-    categories = [ "adas" ]
-else:
-    categories = [ "edge", "datacenter" ]
+version = os.environ.get('AUTOMOTIVE_RESULTS_VERSION')
+categories = [ "adas" ]
 
 # Populate the dictionary with data
 for entry in data:
@@ -785,7 +777,7 @@ for details, entries in tables.items():
                         
                 #if model in data:
                     mlperf_model = None
-                    for scen in [ "Offline", "Server", "SingleStream", "MultiStream" ]:
+                    for scen in [ "SingleStream", "ConstantStream" ]:
                         if scen in data[model]:
                             mlperf_model = data[model][scen]["Model"]
                             break
@@ -795,14 +787,10 @@ for details, entries in tables.items():
                     
                     #version = data[model]["Offline"]["version"]
                     acc_target = checker.MODEL_CONFIG[version]["accuracy-target"][mlperf_model]
-                    if mlperf_model in checker.MODEL_CONFIG[version]["required-scenarios-datacenter"]:
-                        required_scenarios_datacenter = checker.MODEL_CONFIG[version]["required-scenarios-datacenter"][mlperf_model]
+                    if mlperf_model in checker.MODEL_CONFIG[version]["required-scenarios-adas"]:
+                        required_scenarios_adas = checker.MODEL_CONFIG[version]["required-scenarios-adas"][mlperf_model]
                     else:
-                        required_scenarios_datacenter = []
-                    if mlperf_model in checker.MODEL_CONFIG[version]["required-scenarios-edge"]:
-                        required_scenarios_edge = checker.MODEL_CONFIG[version]["required-scenarios-edge"][mlperf_model]
-                    else:
-                        required_scenarios_edge = []
+                        required_scenarios_adas = []
 
                     i = 0
                     acc_targets = []
@@ -820,43 +808,25 @@ for details, entries in tables.items():
                     acc_targets_string = ", ".join(acc_targets_list)
                     html_table += f"""<td class="acc-target">{acc_targets_string}</td>"""
 
-                    if "datacenter" in category:
-                        if "Server" in data[model]:
-                            if division == "open":
-                                html_table += f"""<td class="accuracy">{round_dict_values(data[model]["Server"]["Accuracy"])}</td>"""
-                            html_table += f"""<td class="units">{data[model]["Server"]["Performance_Units"]}</td> <td class="perf">{data[model]["Server"]["Performance_Result"]:.2f}</td>"""
-                        else:
-                            if "Server" in required_scenarios_datacenter: #must be open
-                                html_table += scenario_missing_td
-                            else:
-                                html_table += f"""<td class="na" colspan="{colspan}"> N/A </td>"""
-
-                    if "Offline" in data[model]:
+                    if "SingleStream" in data[model]:
+                        scenario = "SingleStream"
                         if division == "open":
-                            html_table += f"""<td class="accuracy">{round_dict_values(data[model]["Offline"]["Accuracy"])}</td>"""
-                        html_table += f"""<td class="units">{data[model]["Offline"]['Performance_Units']}</td> <td class="perf">{data[model]["Offline"]["Performance_Result"]:.2f}</td>"""
+                            html_table += f"""<td class="accuracy">{round_dict_values(data[model][scenario]["Accuracy"])}</td>"""
+                        html_table += f"""<td class="units">{data[model][scenario]["Performance_Units"]}</td> <td class="perf">{data[model][scenario]["Performance_Result"]:.2f}</td>"""
                     else:
-                        html_table += scenario_missing_td
-                    if "edge" in category:
-                        if "SingleStream" in data[model]:
-                            scenario = "SingleStream"
-                            if division == "open":
-                                html_table += f"""<td class="accuracy">{round_dict_values(data[model][scenario]["Accuracy"])}</td>"""
-                            html_table += f"""<td class="units">{data[model][scenario]["Performance_Units"]}</td> <td class="perf">{data[model][scenario]["Performance_Result"]:.2f}</td>"""
+                        if "SingleStream" in required_scenarios_adas: #must be open
+                            html_table += scenario_missing_td
                         else:
-                            if "SingleStream" in required_scenarios_edge: #must be open
+                            html_table += f"""<td class="na" colspan="{colspan}"> N/A </td>"""
+                    
+                    if "ConstantStream" in data[model]:
+                        if division == "open":
+                            html_table += f"""<td class="accuracy">{round_dict_values(data[model]["ConstantStream"]["Accuracy"])}</td>"""
+                        html_table += f"""<td class="units">{data[model]["ConstantStream"]["Performance_Units"]}</td> <td class="perf">{data[model]["ConstantStream"]["Performance_Result"]:.2f}</td>"""
+                    else:
+                        if "ConstantStream" in required_scenarios_adas: #must be open
                                 html_table += scenario_missing_td
-                            else:
-                                html_table += f"""<td class="na" colspan="{colspan}"> N/A </td>"""
-                        if "MultiStream" in data[model]:
-                            scenario = "MultiStream"
-                            if division == "open":
-                                html_table += f"""<td class="accuracy">{round_dict_values(data[model][scenario]["Accuracy"])}</td>"""
-                            html_table += f"""<td class="units">{data[model][scenario]["Performance_Units"]}</td> <td class="perf">{data[model][scenario]["Performance_Result"]:.2f}</td>"""
                         else:
-                            if "MultiStream" in required_scenarios_edge: #must be open
-                                html_table += scenario_missing_td
-                            else:
                                 html_table += f"""<td class="na" colspan="{colspan}"> N/A </td>"""
                 
                     #html_table += "<td></td> <td></td>"
@@ -910,9 +880,9 @@ for details, entries in tables.items():
 </main>
 """
 
-            repo_name = os.environ.get('INFERENCE_RESULTS_REPO_NAME', os.environ.get('AUTOMOTIVE_RESULTS_REPO_NAME', "mlperf_inference_test_submissions_v5.0"))
-            repo_branch = os.environ.get('INFERENCE_RESULTS_REPO_BRANCH', os.environ.get('AUTOMOTIVE_RESULTS_REPO_BRANCH', "main"))
-            repo_owner = os.environ.get('INFERENCE_RESULTS_REPO_OWNER', os.environ.get('AUTOMOTIVE_RESULTS_REPO_OWNER', 'mlcommons'))
+            repo_name = os.environ.get('AUTOMOTIVE_RESULTS_REPO_NAME', "mlperf_automotive_test_submissions_v0.5")
+            repo_branch = os.environ.get('AUTOMOTIVE_RESULTS_REPO_BRANCH', "main")
+            repo_owner = os.environ.get('AUTOMOTIVE_RESULTS_REPO_OWNER', 'mlcommons')
 
             readme_content = f"""See the HTML preview [here](https://htmlpreview.github.io/?https://github.com/{repo_owner}/{repo_name}/blob/{repo_branch}/{division}/{submitter}/results/{sut_name}/summary.html)
 {html_table}

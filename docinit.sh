@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ ! -e docs ]; then
-    git clone https://github.com/mlcommons/inference_results_visualization_template.git docs
+    git clone https://github.com/mlcommons/inference_results_visualization_template.git --branch=changes_to_include_automotive docs
     test $? -eq 0 || exit $?
 fi
 
@@ -12,9 +12,9 @@ if [ ! -e overrides ]; then
     test $? -eq 0 || exit $?
 fi
 
-repo_owner=${INFERENCE_RESULTS_REPO_OWNER:${AUTOMOTIVE_RESULTS_REPO_OWNER:-mlcommons}}
-repo_branch=${INFERENCE_RESULTS_REPO_BRANCH:${AUTOMOTIVE_RESULTS_REPO_BRANCH:-main}}
-repo_name=${INFERENCE_RESULTS_REPO_NAME:-inference_results_${INFERENCE_RESULTS_VERSION:-AUTOMOTIVE_RESULTS_VERSION}}
+repo_owner=${AUTOMOTIVE_RESULTS_REPO_OWNER:-mlcommons}}
+repo_branch=${AUTOMOTIVE_RESULTS_REPO_BRANCH:-main}}
+repo_name=${INFERENCE_RESULTS_REPO_NAME:-inference_results_${INFERENCE_RESULTS_VERSION}}
 echo "repo owner: ${repo_owner}"
 echo "repo branch: ${repo_branch}"
 echo "repo name: ${repo_name}"
@@ -24,12 +24,10 @@ let ver_num++
 rm -f docs/javascripts/config.js
 
 if [ ! -e docs/javascripts/config.js ]; then
-    if [ -n "${INFERENCE_RESULTS_VERSION}" ]; then
-        results_version="${INFERENCE_RESULTS_VERSION}"
-    elif [ -n "${AUTOMOTIVE_RESULTS_VERSION}" ]; then
+    if [ -n "${AUTOMOTIVE_RESULTS_VERSION}" ]; then
         results_version="${AUTOMOTIVE_RESULTS_VERSION}"
     else
-        echo "Please export INFERENCE_RESULTS_VERSION or AUTOMOTIVE_RESULTS_VERSION (e.g., v4.1)"
+        echo "Please export AUTOMOTIVE_RESULTS_VERSION (e.g., v0.5)"
         exit 1
     fi
     echo "const results_version=\"${results_version}\";" > docs/javascripts/config.js
@@ -61,9 +59,7 @@ if [ ! -e add_results_summary.py ]; then
     test $? -eq 0 || exit $?
 fi
 
-if [ -n "${INFERENCE_RESULTS_VERSION}" ]; then
-    repo_to_clone="inference"
-elif [ -n "${AUTOMOTIVE_RESULTS_VERSION}" ]; then
+if [ -n "${AUTOMOTIVE_RESULTS_VERSION}" ]; then
     repo_to_clone="mlperf_automotive"
 else
     echo "Please export either INFERENCE_RESULTS_VERSION or AUTOMOTIVE_RESULTS_VERSION."
@@ -72,7 +68,7 @@ fi
 
 export PYTHONPATH="$repo_to_clone/tools/submission:$PYTHONPATH"
 
-if [ ! -e "${target_dir}" ]; then
+if [ ! -e "${repo_to_clone}" ]; then
     git clone https://github.com/mlcommons/${repo_to_clone} "${repo_to_clone}" --depth=1
     test $? -eq 0 || exit $?
 fi

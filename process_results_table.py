@@ -41,9 +41,10 @@ tableposhtml = """
 </div>
         """
 
-repo_owner = os.environ.get("INFERENCE_RESULTS_REPO_OWNER", "mlcommons") 
-repo_name = os.environ.get("INFERENCE_RESULTS_REPO_NAME", "inference_results_v4.1") 
-repo_branch = os.environ.get("INFERENCE_RESULTS_REPO_OWNER", "main") 
+repo_owner = os.environ.get("AUTOMOTIVE_RESULTS_REPO_OWNER", "mlcommons")
+repo_name = os.environ.get("AUTOMOTIVE_RESULTS_REPO_NAME", "automotive_results_v0.5")
+repo_branch = os.environ.get("AUTOMOTIVE_RESULTS_REPO_OWNER","main")
+version = os.environ.get("AUTOMOTIVE_RESULTS_VERSION", "v0.5")
 
 def get_json_files(github_url):
     import requests
@@ -174,9 +175,8 @@ def processdata(data, category, division, availability):
             mydata[myid][key] = item[key]
     return mydata
 
-models_dc = [ "llama2-70b-99", "llama2-70b-99.9", "gptj-99", "gptj-99.9", "bert-99", "bert-99.9", "stable-diffusion-xl",  "dlrm-v2-99", "dlrm-v2-99.9", "retinanet", "resnet", "3d-unet-99", "3d-unet-99.9"  ]
-models_edge = [ "gptj-99", "gptj-99.9", "bert-99", "bert-99.9", "stable-diffusion-xl", "retinanet", "resnet", "3d-unet-99", "3d-unet-99.9"  ]
-
+import submission_checker as checker
+models_adas = list(checker_module.MODEL_CONFIG[version]["required-scenarios-adas"].keys())
 
 def get_scenario_result(data, scenario, location_pre, result_link_text):
     html = ''
@@ -198,86 +198,35 @@ def construct_table(category, division, availability):
     html = f"""<div id="results_table_{availability}" class="resultstable_wrapper"> <table class="resultstable tablesorter tableclosed tabledatacenter" id="results_{availability}">"""
     html += "<thead> <tr>"
 
-    if category == "datacenter":
-        models = models_dc
-    else:
-        models = models_edge
+    models = models_adas
     
     # Table header
-    if category == "datacenter":
-        tableheader = f"""
-            <th id="col-id" class="headcol col-id">ID</th>
-            <th id="col-system" class="headcol col-system">System</th>
-            <th id="col-submitter" class="headcol col-submitter">Submitter</th>
-            <th id="col-accelerator" class="headcol col-accelerator">Accelerator</th>
-            <th id="col-llama2-99" colspan="2">LLAMA2-70B-99</th>
-            <th id="col-llama2-99.9" colspan="2">LLAMA2-70B-99.9</th>
-            <th id="col-gptj-99" colspan="2">GPTJ-99</th>
-            <th id="col-gptj-99.9" colspan="2">GPTJ-99.9</th>
-            <th id="col-bert-99" colspan="2">Bert-99</th>
-            <th id="col-bert-99.9" colspan="2">Bert-99.9</th>
-            <th id="col-sdxl" colspan="2">Stable Diffusion</th>
-            <th id="col-dlrm-v2-99" colspan="2">DLRM-v2-99</th>
-            <th id="col-dlrm-v2-99.9" colspan="2">DLRM-v2-99.9</th>
-            <th id="col-retinanet" colspan="2">Retinanet</th>
-            <th id="col-resnet50" colspan="2">ResNet50</th>
-            <th id="col-3d-unet-99" colspan="1">3d-unet-99</th>
-            <th id="col-3d-unet-99.9" colspan="1">3d-unet-99.9</th>
-            """ 
-        tableheader += "</tr>"
-    
-        tableheader += f"""
-        <tr>
-        <th class="headcol col-id"></th>
-        <th class="headcol col-system"></th>
-        <th class="headcol col-submitter"></th>
-        <th class="headcol col-accelerator"></th>
+    tableheader = f"""
+        <th id="col-id" class="headcol col-id">ID</th>
+        <th id="col-system" class="headcol col-system">System</th>
+        <th id="col-submitter" class="headcol col-submitter">Submitter</th>
+        <th id="col-accelerator" class="headcol col-accelerator">Accelerator</th>
         """
-        for model in models:
-            if "3d-unet" in model:
-                tableheader += f"""
-                <th class="col-scenario">Offline</th>
-                """
-            else:
-                tableheader += f"""
-                <th class="col-scenario">Server</th>
-                <th class="col-scenario">Offline</th>
-                """
-    else: # category == "edge":
-        tableheader = f"""
-            <th id="col-id" class="headcol col-id">ID</th>
-            <th id="col-system" class="headcol col-system">System</th>
-            <th id="col-submitter" class="headcol col-submitter">Submitter</th>
-            <th id="col-accelerator" class="headcol col-accelerator">Accelerator</th>
-            <th id="col-gptj-99" colspan="2">GPTJ-99</th>
-            <th id="col-gptj-99.9" colspan="2">GPTJ-99.9</th>
-            <th id="col-bert-99" colspan="2">Bert-99</th>
-            <th id="col-bert-99.9" colspan="2">Bert-99.9</th>
-            <th id="col-sdxl" colspan="2">Stable Diffusion</th>
-            <th id="col-retinanet" colspan="3">Retinanet</th>
-            <th id="col-resnet50" colspan="3">ResNet50</th>
-            <th id="col-3d-unet-99" colspan="2">3d-unet-99</th>
-            <th id="col-3d-unet-99.9" colspan="2">3d-unet-99.9</th>
-            """ 
-        tableheader += "</tr>"
     
+    for model in models:
         tableheader += f"""
-        <tr>
-        <th class="headcol col-id"></th>
-        <th class="headcol col-system"></th>
-        <th class="headcol col-submitter"></th>
-        <th class="headcol col-accelerator"></th>
+        <th id="col-{model}" colspan="2">{model.upper()}</th>
+        """ 
+    tableheader += "</tr>"
+
+    tableheader += f"""
+    <tr>
+    <th class="headcol col-id"></th>
+    <th class="headcol col-system"></th>
+    <th class="headcol col-submitter"></th>
+    <th class="headcol col-accelerator"></th>
+    """
+    for model in models:
+        tableheader += f"""
+        <th class="col-scenario">SingleStream</th>
+        <th class="col-scenario">ConstantStream</th>
         """
-        for model in models:
-            tableheader += f"""
-                <th class="col-scenario">Offline</th>
-                <th class="col-scenario">SingleStream</th>
-            """
-            if  model in ["resnet", "retinanet"]:
-                tableheader += f"""
-                <th class="col-scenario">MultiStream</th>
-            """
-     
+    
     # Add header and footer
     html += tableheader
     html += "</tr></thead>"
@@ -317,27 +266,13 @@ Notes: {mydata[rid]['Notes']}
 
         for m in models:
             if mydata[rid].get(m):
-                if category == "datacenter" and "3d-unet" not in m:#dc
-                    html +=  get_scenario_result(mydata[rid][m], "Server", location_pre, result_link_text)
-                    
-                html +=  get_scenario_result(mydata[rid][m], "Offline", location_pre, result_link_text)
-                
-                if category == "edge": #Process SS and MS
-                    html +=  get_scenario_result(mydata[rid][m], "SingleStream", location_pre, result_link_text)
-                    if m in ["resnet", "retinanet"]:
-                        html +=  get_scenario_result(mydata[rid][m], "MultiStream", location_pre, result_link_text)
+                html +=  get_scenario_result(mydata[rid][m], "ConstantStream", location_pre, result_link_text)  
+                html +=  get_scenario_result(mydata[rid][m], "SingleStream", location_pre, result_link_text)
             else:
                 html += f"""
                 <td></td>
+                <td></td>
                 """
-                if ("3d-unet" not in m and category == "datacenter") or (category == "edge"):
-                    html += f"""
-                    <td></td>
-                    """
-                if m in ["resnet", "retinanet"]  and category == "edge":
-                    html += f"""
-                    <td></td>
-                    """
 
 
         html += f"""
@@ -353,10 +288,7 @@ def construct_summary_table(category, division):
     summary_data, count_data = getsummarydata(data, category, division)
     #print(count_data)
 
-    if category == "datacenter":
-        models = models_dc
-    else:
-        models = models_edge
+    models = models_adas
 
     html  = ""
     html += """
@@ -366,40 +298,18 @@ def construct_summary_table(category, division):
     <tr>
     <th class="count-submitter">Submitter</th>
     """
-    if category == "datacenter":
-        html += """
-            <th id="col-llama2-99">LLAMA2-70B-99</th>
-            <th id="col-llama2-99.9">LLAMA2-70B-99.9</th>
-            <th id="col-gptj-99">GPTJ-99</th>
-            <th id="col-gptj-99.9">GPTJ-99.9</th>
-            <th id="col-bert-99">Bert-99</th>
-            <th id="col-bert-99.9">Bert-99.9</th>
-            <th id="col-dlrm-v2-99">Stable Diffusion</th>
-            <th id="col-dlrm-v2-99">DLRM-v2-99</th>
-            <th id="col-dlrm-v2-99.9">DLRM-v2-99.9</th>
-            <th id="col-retinanet">Retinanet</th>
-            <th id="col-resnet50">ResNet50</th>
-            <th id="col-3d-unet-99">3d-unet-99</th>
-            <th id="col-3d-unet-99.9">3d-unet-99.9</th>
-            <th id="all-models">Total</th>
-            </tr>
-            </thead>
+
+    for model in models:
+        html += f"""
+            <th id="col-{model}">{model.upper()}</th>
             """
-    else:
-        html += """
-                <th id="col-gptj-99">GPTJ-99</th>
-                <th id="col-gptj-99.9">GPTJ-99.9</th>
-                <th id="col-bert-99">Bert-99</th>
-                <th id="col-bert-99.9">Bert-99.9</th>
-                <th id="col-sdxl">Stable Diffusion</th>
-                <th id="col-retinanet">Retinanet</th>
-                <th id="col-resnet50">ResNet50</th>
-                <th id="col-3d-unet-99">3d-unet-99</th>
-                <th id="col-3d-unet-99.9">3d-unet-99.9</th>
-                <th id="all-models">Total</th>
-                </tr>
-                </thead>
+
+    html += """
+        <th id="all-models">Total</th>
+        </tr>
+        </thead>
         """
+
     total_counts = {}
     for submitter, item in count_data.items():
         html += "<tr>"
@@ -435,9 +345,8 @@ def construct_summary_table(category, division):
     html += "</table></div>"
     return html
 
-categories = { "datacenter" : "Datacenter",
-              "edge": "Edge"
-              }
+categories = { "adas" : "Adas"}
+
 divisions= {
         "closed": "Closed",
         "open": "Open"
@@ -498,10 +407,10 @@ def generate_html_form(categories, divisions, selected_category=None, selected_d
 
     return html_form
 
-availabilities = ["Available", "Preview", "RDI" ]
+availabilities = checker.VALID_AVAILABILITIES
 #availabilities = ["Available" ]
 division=os.environ.get("default_division", "open")
-category=os.environ.get("default_category", "edge")
+category=os.environ.get("default_category", "adas")
 
 html = ""
 for availability in availabilities:
@@ -558,6 +467,14 @@ hide:
 with open(os.path.join("docs", "index.md"), "w") as f:
     f.write(out_html)
 
+data = {
+    "valid_availabilities": availabilities,
+    "models_adas": models_adas,
+    "scenarios": checker.RESULT_FIELD_NEW[version].keys()
+}
+
+with open("javascripts/checker_constants.json", "w") as f:
+    json.dump(data, f, indent=2)
 
 #print(data)
 

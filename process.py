@@ -134,13 +134,11 @@ def construct_table(scenario, models, data1, data2, is_power, results1, results2
 
 
 def process_scenarios(system1, system2, sysversion1, sysversion2, modelfilterstring):
-    scenarios = ["Offline", "Server", "SingleStream", "MultiStream"]
-    ytitle_scenarios = {
-        "Offline": "Samples per Second",
-        "Server": "Samples per Second",
-        "SingleStream": "Latency per sample in milliseconds",
-        "MultiStream": "Latency per query of 8 samples in milliseconds",
-    }
+    import submission_checker as checker
+    version = os.environ.get("AUTOMOTIVE_RESULTS_VERSION", "v0.5")
+    ytitle_scenarios = checker.RESULT_FIELD_NEW[version]
+    scenarios = list(ytitle_scenarios.keys())
+
     content = {}
     content['custom_0'] = """
         <script type='text/javascript'>
@@ -298,8 +296,8 @@ def generate_html_form(platforms, models_all, data1=None, data2=None, modelsdata
 
 system1 = "1xMI300X_2EPYC-937F"
 system2 = "8xMI300X_2EPYC-937F"
-sysversion1 = "v4.1"
-sysversion2 = "v4.1"
+sysversion1 = "v0.5"
+sysversion2 = "v0.5"
 modelfilterstring = ""
 
 content = process_scenarios(system1, system2, sysversion1, sysversion2, modelfilterstring)

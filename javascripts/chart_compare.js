@@ -19,7 +19,7 @@ const charts = {
 };
 
 // Available scenarios for analysis
-const analysisScenarios = ["Offline", "Server", "SingleStream", "MultiStream"];
+const analysisScenarios = ["SingleStream", "ConstantStream"];
 
 function initializeCharts() {
     analysisScenarios.forEach(scenario => generateChartsForScenario(scenario));

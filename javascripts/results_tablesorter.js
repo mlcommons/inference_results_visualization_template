@@ -68,14 +68,7 @@ function constructChartFromSummary(data, category, division, with_power) {
   let submitterVsSubmissionsCntTmp = {};
   let modelsVsSubmissionsCntTmp = {};
 
-  if ( category==="edge" ) {
-    models = models_edge;
-    //console.log("edgecategory");
-  }
-  else {
-    models = models_datacenter;
-    //console.log("datacenter");
-  }
+  models = models_adas_;
 
   // Loop for getting submitters vs number of submissions count
   for (const [submitter, item] of Object.entries(countData)) {
@@ -148,7 +141,7 @@ function drawChartResults(){
 }
 
 function reConstructTables(category, division, with_power, data){
-  availabilities = [ "Available", "Preview", "RDI" ];
+  availabilities = [ "hardened", "development", "engineering_samples", "presilicon" ];
   total_count = 0;
   if(with_power) {
     result_prefix = "power"
@@ -281,46 +274,26 @@ function getSummaryData(data, category, division, with_power) {
 function constructSummaryTable(data, category, division, with_power) {
   const [summaryData, countData] = getSummaryData(data, category, division, with_power);
   let html = ``
-  if (category == "datacenter") {
+  
+  html += `
+    <thead>
+    <tr>
+    <th class="count-submitter">Submitter</th>`
+  for(let model of models_adas_) {
     html += `
-      <thead>
-      <tr>
-      <th class="count-submitter">Submitter</th>`
-    for(let model of models_datacenter) {
-      html += `
 	<th id="col-model">${model}</th>
 	`
-    }
-    html += ` 
-      <th id="all-models">Total</th>
-      </tr>
-      </thead>
-      `;
   }
-  else {
-    html += `
-      <thead>
-      <tr>
-      <th class="count-submitter">Submitter</th>`
-    for(let model of models_edge) {
-      html += `
-	<th id="col-model">${model}</th>
-	`
-    }
-    html += ` 
-      <th id="all-models">Total</th>
-      </tr>
-      </thead>
-      `;
-  }
+  html += ` 
+    <th id="all-models">Total</th>
+    </tr>
+    </thead>
+    `;
+  
   const totalCounts = {};
-  models = [];
-  if (category == "datacenter") {
-    models = models_datacenter;
-  }
-  else{
-    models = models_edge;
-  }
+  let models = [];
+  models = models_adas_;
+  
   for (const submitter in countData) {
     html += "<tr>";
     let cnt = 0;
@@ -429,169 +402,85 @@ function constructOpenTableModel(model, category, with_power, availability, myda
   html = `
    <table class="resultstable tablesorter tableopen table${category}" id="results_${model}_${availability}">`;
   html += `<thead> <tr>`
-  if (category == "datacenter") {
-    if (with_power) {
-      colspan = 8;
-      colspan_single = 4;
-      model_header = ``;
-      if(scenarioPerfUnits[model].hasOwnProperty("Server")) {
-      model_header += `<th class="col-scenario" colspan="4">Server</th>`;
-      }
-      if(scenarioPerfUnits[model].hasOwnProperty("Offline")) {
-	model_header +=	`<th class="col-scenario" colspan="4">Offline</th>`;
-      }
-      //console.log(scenarioPerfUnits);
-      model_header_2 = ``;
-      if(scenarioPerfUnits[model].hasOwnProperty("Server")) {
-      model_header_2 += `
-	<th class="col-scenario">Accuracy</th>
-	<th class="col-scenario">${scenarioPerfUnits[model]['Server']}</th>
-	<th class="col-scenario">${scenarioPowerUnits['Server']}</th>
-	<th class="col-scenario">Samples/J</th>
-	  `;
-      }
-      if(scenarioPerfUnits[model].hasOwnProperty("Offline")) {
-      model_header_2 += `
-	<th class="col-scenario">Accuracy</th>
-	<th class="col-scenario">${scenarioPerfUnits[model]['Offline']}</th>
-	<th class="col-scenario">${scenarioPowerUnits['Offline']}</th>
-	<th class="col-scenario">Samples/J</th>
-	`;
-      }
-      model_header_single = ``;
-      model_header_single_2 = ``;
-      if(scenarioPerfUnits[model].hasOwnProperty("Offline")) {
-      	model_header_single +=` 
-	  <th class="col-scenario" colspan="${colspan_single}">Offline</th>
-	`;
-      model_header_single_2 += `
-	<th class="col-scenario">Accuracy</th>
-	<th class="col-scenario">${scenarioPerfUnits[model]['Offline']}</th>
-	<th class="col-scenario">${scenarioPowerUnits['Offline']}</th>
-	<th class="col-scenario">Samples/J</th>
-	`;
-      }
+  
+  if (with_power) {
+    colspan = 8;
+    colspan_single = 4;
+    model_header = ``;
+    if(scenarioPerfUnits[model].hasOwnProperty("ConstantStream")) {
+    model_header += `<th class="col-scenario" colspan="4">ConstantStream</th>`;
     }
-    else {
-      colspan = 4;
-      colspan_single = 2;
-      model_header = ``;
-      if(scenarioPerfUnits[model].hasOwnProperty("Server")) {
-      model_header += `<th class="col-scenario" colspan="2">Server</th>`;
-      }
-      if(scenarioPerfUnits[model].hasOwnProperty("Offline")) {
-	model_header += `<th class="col-scenario" colspan="2">Offline</th>`;
-      }
-      model_header_2 = ``;
-      if(scenarioPerfUnits[model].hasOwnProperty("Server")) {
-      	model_header_2 += `
-	<th class="col-scenario">${accuracyUnits[model]}</th>
-	<th class="col-scenario">${scenarioPerfUnits[model]['Server']}</th>
-	  `;
-      }
-      if(scenarioPerfUnits[model].hasOwnProperty("Offline")) {
-      	model_header_2 += `
-	<th class="col-scenario">${accuracyUnits[model]}</th>
-	<th class="col-scenario">${scenarioPerfUnits[model]['Offline']}</th>
-	`;
-      }
-      model_header_single = ``;
-      model_header_single_2 = ``;
-      if(scenarioPerfUnits[model].hasOwnProperty("Offline")) {
-      model_header_single += `
-	<th class="col-scenario">Offline</th>
-	`;
-      model_header_single_2 += `
-	<th class="col-scenario">${accuracyUnits[model]}</th>
-	<th class="col-scenario">${scenarioPerfUnits['Offline']}</th>
-	`;
-      }
+    if(scenarioPerfUnits[model].hasOwnProperty("SingleStream")) {
+model_header +=	`<th class="col-scenario" colspan="4">SingleStream</th>`;
     }
-
+    //console.log(scenarioPerfUnits);
+    model_header_2 = ``;
+    if(scenarioPerfUnits[model].hasOwnProperty("ConstantStream")) {
+    model_header_2 += `
+<th class="col-scenario">Accuracy</th>
+<th class="col-scenario">${scenarioPerfUnits[model]['ConstantStream']}</th>
+<th class="col-scenario">${scenarioPowerUnits['ConstantStream']}</th>
+<th class="col-scenario">Samples/J</th>
+  `;
+    }
+    if(scenarioPerfUnits[model].hasOwnProperty("SingleStream")) {
+    model_header_2 += `
+<th class="col-scenario">Accuracy</th>
+<th class="col-scenario">${scenarioPerfUnits[model]['SingleStream']}</th>
+<th class="col-scenario">${scenarioPowerUnits['SingleStream']}</th>
+<th class="col-scenario">Samples/J</th>
+`;
+    }
+    model_header_single = ``;
+    model_header_single_2 = ``;
+    if(scenarioPerfUnits[model].hasOwnProperty("SingleStream")) {
+    	model_header_single +=` 
+  <th class="col-scenario" colspan="${colspan_single}">SingleStream</th>
+`;
+    model_header_single_2 += `
+<th class="col-scenario">Accuracy</th>
+<th class="col-scenario">${scenarioPerfUnits[model]['SingleStream']}</th>
+<th class="col-scenario">${scenarioPowerUnits['SingleStream']}</th>
+<th class="col-scenario">Samples/J</th>
+`;
+    }
   }
   else {
-    if (with_power) {
-      colspan = 6;
-      colspan_ms = 9;
-      model_header = ``;
-      if(scenarioPerfUnits[model].hasOwnProperty("Offline")) {
-      model_header = model_header +`
-	<th class="col-scenario" colspan="4">Offline</th>
-	  `;
-      }
-      if(scenarioPerfUnits[model].hasOwnProperty("SingleStream")) {
-      model_header = model_header + `
-	<th class="col-scenario" colspan="4">SingleStream</th>
-	`;
-      }
-      model_header_2 = ``;
-      if(scenarioPerfUnits[model].hasOwnProperty("Offline")) {
-      	model_header_2 = model_header_2 + `
-	<th class="col-scenario">${accuracyUnits[model]}</th>
-	<th class="col-scenario">${scenarioPerfUnits[model]['Offline']}</th>
-	<th class="col-scenario">${scenarioPowerUnits['Offline']}</th>
-	<th class="col-scenario">Samples/J</th>
-	  `;
-      }
-      if(scenarioPerfUnits[model].hasOwnProperty("SingleStream")) {
-      	model_header_2 = model_header_2 + `
-	<th class="col-scenario">${accuracyUnits[model]}</th>
-	<th class="col-scenario">${scenarioPerfUnits[model]['SingleStream']}</th>
-	<th class="col-scenario">${scenarioPowerUnits['SingleStream']}</th>
-	<th class="col-scenario">Samples/J</th>
-	`;
-      }
-      if(scenarioPerfUnits[model].hasOwnProperty("MultiStream")) {
-      model_header_ms = model_header + `
-	<th class="col-scenario" colspan="4">MultiStream</th>
-	`;
-      model_header_ms_2 = model_header_2 + `
-	<th class="col-scenario">${accuracyUnits[model]}</th>
-	<th class="col-scenario">${scenarioPerfUnits[model]['MultiStream']}</th>
-	<th class="col-scenario">${scenarioPowerUnits['MultiStream']}</th>
-	<th class="col-scenario">Samples/J</th>
-	`;
-      }
+    colspan = 4;
+    colspan_single = 2;
+    model_header = ``;
+    if(scenarioPerfUnits[model].hasOwnProperty("ConstantStream")) {
+    model_header += `<th class="col-scenario" colspan="2">ConstantStream</th>`;
     }
-    else {
-      colspan = 2;
-      colspan_ms = 6;
-      if(scenarioPerfUnits[model].hasOwnProperty("Offline")) {
-	model_header = `
-	  <th class="col-scenario" colspan="${colspan}">Offline</th>
-	  `;
-      }
-      if(scenarioPerfUnits[model].hasOwnProperty("SingleStream")) {
-	model_header = model_header + `<th class="col-scenario" colspan="${colspan}">SingleStream</th>
-	  `;
-      }
-
-      model_header_2 = ''
-      if(scenarioPerfUnits[model].hasOwnProperty("Offline")) {
-	model_header_2 += `
-	  <th class="col-scenario">${accuracyUnits[model]}</th>
-	  <th class="col-scenario">${scenarioPerfUnits[model]['Offline']}</th>
-	  `;
-      }
-      if(scenarioPerfUnits[model].hasOwnProperty("SingleStream")) {
-	model_header_2 += `
-	  <th class="col-scenario">${accuracyUnits[model]}</th>
-	  <th class="col-scenario">${scenarioPerfUnits[model]['SingleStream']}</th>
-	  `;
-      }
-      if(model.includes("resnet") || model.includes("retinanet")) {
-	if(scenarioPerfUnits[model].hasOwnProperty("MultiStream")) {
-	  model_header = model_header + `
-	    <th class="col-scenario" colspan="${colspan}">MultiStream</th>
-	    `;
-	  model_header_2 = model_header_2 + `
-	    <th class="col-scenario">${accuracyUnits[model]}</th>
-	    <th class="col-scenario">${scenarioPerfUnits[model]['MultiStream']}</th>
-	    `;
-	}
-      }
+    if(scenarioPerfUnits[model].hasOwnProperty("SingleStream")) {
+model_header += `<th class="col-scenario" colspan="2">SingleStream</th>`;
+    }
+    model_header_2 = ``;
+    if(scenarioPerfUnits[model].hasOwnProperty("ConstantStream")) {
+    	model_header_2 += `
+<th class="col-scenario">${accuracyUnits[model]}</th>
+<th class="col-scenario">${scenarioPerfUnits[model]['ConstantStream']}</th>
+  `;
+    }
+    if(scenarioPerfUnits[model].hasOwnProperty("SingleStream")) {
+    	model_header_2 += `
+<th class="col-scenario">${accuracyUnits[model]}</th>
+<th class="col-scenario">${scenarioPerfUnits[model]['SingleStream']}</th>
+`;
+    }
+    model_header_single = ``;
+    model_header_single_2 = ``;
+    if(scenarioPerfUnits[model].hasOwnProperty("SingleStream")) {
+    model_header_single += `
+<th class="col-scenario">SingleStream</th>
+`;
+    model_header_single_2 += `
+<th class="col-scenario">${accuracyUnits[model]}</th>
+<th class="col-scenario">${scenarioPerfUnits['SingleStream']}</th>
+`;
     }
   }
+
   tableheader = `
     <th class="headcol col-id">ID</th>
     <th class="headcol col-system">System</th>
@@ -634,7 +523,7 @@ function constructOpenTableModel(model, category, with_power, availability, myda
 
     let a_num = mydata[rid]['a#'] || '';
     let acc = a_num === '' ? "" : `${mydata[rid].Accelerator} x ${parseInt(a_num)}`;
-    let system_json_link = mydata[rid].Details.replace("/results/", "/systems/").replace("submissions_inference_4.0", "inference_results_v4.0") + ".json";
+    let system_json_link = mydata[rid].Details.replace("/results/", "/systems/").replace("submissions_automotive_0.5", "inference_automotive_v0.5") + ".json";
     let system_info_link = mydata[rid].Details.replace("/results/", "/measurements/") + "/system_info.txt";
     html += `
       <tr>
@@ -646,47 +535,24 @@ function constructOpenTableModel(model, category, with_power, availability, myda
       <td class="col-submitter headcol"> ${mydata[rid].Submitter} </td>
       <td class="col-accelerator headcol"> ${acc} </td>
       `;
-    if(mydata[rid][model].hasOwnProperty("Offline")) {
-      html += `<td class="col-usedmodel headcol"> ${mydata[rid][model]["Offline"].UsedModel} </td>`;
-    }
-    else if(mydata[rid][model].hasOwnProperty("Server")) {
-      html += `<td class="col-usedmodel headcol"> ${mydata[rid][model]["Server"].UsedModel} </td>`;
-    }
-    else if(mydata[rid][model].hasOwnProperty("SingleStream")) {
+    if(mydata[rid][model].hasOwnProperty("SingleStream")) {
       html += `<td class="col-usedmodel headcol"> ${mydata[rid][model]["SingleStream"].UsedModel} </td>`;
     }
-    else if(mydata[rid][model].hasOwnProperty("MultiStream")) {
-      html += `<td class="col-usedmodel headcol"> ${mydata[rid][model]["MultiStream"].UsedModel} </td>`;
+    else if(mydata[rid][model].hasOwnProperty("ConstantStream")) {
+      html += `<td class="col-usedmodel headcol"> ${mydata[rid][model]["ConstantStream"].UsedModel} </td>`;
     }
 
-
-
-    if (category == "datacenter") {
-      if(scenarioPerfUnits[model].hasOwnProperty("Server")) {
-	scenario_data = get_scenario_td_data(mydata[rid][model], "Server", with_power, true);
-	html += scenario_data;
-      }
-      if(scenarioPerfUnits[model].hasOwnProperty("Offline")) {
-      scenario_data = get_scenario_td_data(mydata[rid][model], "Offline", with_power, true);
-      html += scenario_data;
-      }
-    }
-    else {
-      if(scenarioPerfUnits[model].hasOwnProperty("Offline")) {
-      scenario_data = get_scenario_td_data(mydata[rid][model], "Offline", with_power, true);
-      html += scenario_data;
-      }
-      if(scenarioPerfUnits[model].hasOwnProperty("SingleStream")) {
+    if(scenarioPerfUnits[model].hasOwnProperty("SingleStream")) {
       scenario_data = get_scenario_td_data(mydata[rid][model], "SingleStream", with_power, true);
       html += scenario_data;
-      }
-      if(scenarioPerfUnits[model].hasOwnProperty("MultiStream")) {
-	scenario_data = get_scenario_td_data(mydata[rid][model], "MultiStream", with_power, true);
-	html += scenario_data;
-      }
+    }
+    if(scenarioPerfUnits[model].hasOwnProperty("ConstantStream")) {
+	    scenario_data = get_scenario_td_data(mydata[rid][model], "ConstantStream", with_power, true);
+	    html += scenario_data;
+    }
     }
     html += `</tr>`;
-  }
+
   if(!validData) {
     html = ''
   }
@@ -709,16 +575,12 @@ function constructOpenTableModel(model, category, with_power, availability, myda
 
 function constructOpenTable(category, with_power, availability, data) {
   models = []
-  if (category == "datacenter") {
-    models = models_datacenter;
-  }
-  else{
-    models = models_edge;
-  }
+  models = models_adas_;
+  
   html = ''
   models.forEach(function(model, index) {
     html += constructOpenTableModel(model, category, with_power, availability, data);
-    if (category === "datacenter") {
+    if (category === "adas") {
       html += `
 	<div id="AccVsPerfScatterPlot_${model}_open_${category}_${availability}" style="height: 370px; width: 100%; display: none; "></div>
 	`;   
@@ -753,196 +615,67 @@ function constructTable(category, division, with_power, availability, data) {
   let tableheader = ``;
   //console.log(with_power);
   
-  if (category == "datacenter") {
-    if (with_power) {
-      colspan = 6;
-      colspan_single = 3;
-      model_header = `
-	<th class="col-scenario" colspan="3">Server</th>
-	<th class="col-scenario" colspan="3">Offline</th>
-	`;
-      //console.log(scenarioPerfUnits);
-      model_header_2 = `
-	<th class="col-scenario">[SERVERPERFUNITS]</th>
-	<th class="col-scenario">${scenarioPowerUnits['Server']}</th>
-	<th class="col-scenario">Samples/J</th>
-	<th class="col-scenario">[OFFLINEPERFUNITS]</th>
-	<th class="col-scenario">${scenarioPowerUnits['Offline']}</th>
-	<th class="col-scenario">Samples/J</th>
-	`;
-      model_header_single = `
-	<th class="col-scenario" colspan="3">Offline</th>
-	`;
-      model_header_single_2 = `
-	<th class="col-scenario">[OFFLINEPERFUNITS]</th>
-	<th class="col-scenario">${scenarioPowerUnits['Offline']}</th>
-	<th class="col-scenario">Samples/J</th>
-	`;
-    }
-    else {
-      colspan = 2;
-      colspan_single = 1;
-      model_header = `
-	<th class="col-scenario">Server</th>
-	<th class="col-scenario">Offline</th>
-	`;
-      model_header_2 = `
-	<th class="col-scenario">[SERVERPERFUNITS]</th>
-	<th class="col-scenario">[OFFLINEPERFUNITS]</th>
-	`;
-      model_header_single = `
-	<th class="col-scenario">Offline</th>
-	`;
-      model_header_single_2 = `
-	<th class="col-scenario">[OFFLINEPERFUNITS]</th>
-	`;
-    }
-
-    tableheader = `
-      <th id="col-id" class="headcol col-id">ID</th>
-      <th id="col-system" class="headcol col-system">System</th>
-      <th id="col-submitter" class="headcol col-submitter">Submitter</th>
-      <th id="col-accelerator" class="headcol col-accelerator">Accelerator</th>`
-    for(let model of models_datacenter) {
-      if(model.includes("3d-unet")) {
-	span=colspan_single;
-      }
-      else{
-	span=colspan;
-      }
-      tableheader += `
-	<th id="col-model" colspan=${span}>${model}</th>`
-    }
-    tableheader += `
-      </tr>
-      <tr>
-      <th class="headcol col-id"></th>
-      <th class="headcol col-system"></th>
-      <th class="headcol col-submitter"></th>
-      <th class="headcol col-accelerator"></th>`;
-    for(let model of models_datacenter) {
-      if(model.includes("3d-unet")) {
-	tableheader += `
-	${model_header_single}
-	`;
-      }
-      else{
-	tableheader += `
-	${model_header}
-	`;
-      }
-    }
-    tableheader += `
-      </tr>
-      <tr>
-      <th class="headcol col-id"></th>
-      <th class="headcol col-system"></th>
-      <th class="headcol col-submitter"></th>
-      <th class="headcol col-accelerator"></th>`
-
-    for(let model of models_datacenter) {
-      if(model.includes("3d-unet")) {
-	tableheader += model_header_single_2.replace("[OFFLINEPERFUNITS]", scenarioPerfUnits[model]['Offline']);
-      }
-      else{
-	tableheader += model_header_2.replace("[SERVERPERFUNITS]", scenarioPerfUnits[model]['Server']).replace("[OFFLINEPERFUNITS]", scenarioPerfUnits[model]['Offline']);
-      }
-    }
+  if (with_power) {
+    colspan = 6;
+    colspan_ms = 9;
+    model_header = `
+<th class="col-scenario" colspan="3">ConstantStream</th>
+<th class="col-scenario" colspan="3">SingleStream</th>
+`;
+    //console.log(scenarioPerfUnits);
+    model_header_2 = `
+<th class="col-scenario">[CSPERFUNITS]</th>
+<th class="col-scenario">${scenarioPowerUnits['ConstantStream']}</th>
+<th class="col-scenario">Samples/J</th>
+<th class="col-scenario">[SSPERFUNITS]</th>
+<th class="col-scenario">${scenarioPowerUnits['SingleStream']}</th>
+<th class="col-scenario">Samples/J</th>
+`;
   }
   else {
-    if (with_power) {
-      colspan = 6;
-      colspan_ms = 9;
-      model_header = `
-	<th class="col-scenario" colspan="3">Offline</th>
-	<th class="col-scenario" colspan="3">SingleStream</th>
-	`;
-      //console.log(scenarioPerfUnits);
-      model_header_2 = `
-	<th class="col-scenario">[OFFLINEPERFUNITS]</th>
-	<th class="col-scenario">${scenarioPowerUnits['Offline']}</th>
-	<th class="col-scenario">Samples/J</th>
-	<th class="col-scenario">[SSPERFUNITS]</th>
-	<th class="col-scenario">${scenarioPowerUnits['SingleStream']}</th>
-	<th class="col-scenario">Samples/J</th>
-	`;
-      model_header_ms = model_header + `
-	<th class="col-scenario" colspan="3">MultiStream</th>
-	`;
-      model_header_ms_2 = model_header_2 + `
-	<th class="col-scenario">[MSPERFUNITS]</th>
-	<th class="col-scenario">${scenarioPowerUnits['MultiStream']}</th>
-	<th class="col-scenario">Samples/J</th>
-	`;
-    }
-    else {
-      colspan = 2;
-      colspan_ms = 3;
-      model_header = `
-	<th class="col-scenario">Offline</th>
-	<th class="col-scenario">SingleStream</th>
-	`;
-      model_header_2 = `
-	<th class="col-scenario">[OFFLINEPERFUNITS]</th>
-	<th class="col-scenario">[SSPERFUNITS]</th>
-	`;
-      model_header_ms = model_header + `
-	<th class="col-scenario">MultiStream</th>
-	`;
-      model_header_ms_2 = model_header_2 + `
-	<th class="col-scenario">[MSPERFUNITS]</th>
-	`;
-    }
-    tableheader = `
-      <th id="col-id" class="headcol col-id">ID</th>
-      <th id="col-system" class="headcol col-system">System</th>
-      <th id="col-submitter" class="headcol col-submitter">Submitter</th>
-      <th id="col-accelerator" class="headcol col-accelerator">Accelerator</th>`;
-    for(let model of models_edge) {
-      if(model.includes("resnet") || model.includes("retinanet")) {
-	tableheader += `
-	  <th id="col-model" colspan="${colspan_ms}">${model}</th>
-	  `;
-      }
-      else {
-	tableheader += `
-	  <th id="col-model" colspan="${colspan}">${model}</th>
-	  `;
-      }
-    }
-    tableheader += `
-      </tr>
-      <tr>
-      <th class="headcol col-id"></th>
-      <th class="headcol col-system"></th>
-      <th class="headcol col-submitter"></th>
-      <th class="headcol col-accelerator"></th>`;
-    for(let model of models_edge) {
-      if(model.includes("resnet") || model.includes("retinanet")) {
-	tableheader += `
-	${model_header_ms}`;
-      }
-      else{
-	tableheader += `
-	${model_header}`;
-      }
-    }
-    tableheader += `
-      </tr>
-      <tr>
-      <th class="headcol col-id"></th>
-      <th class="headcol col-system"></th>
-      <th class="headcol col-submitter"></th>
-      <th class="headcol col-accelerator"></th>`;
-    for(let model of models_edge) {
-      if(model.includes("resnet") || model.includes("retinanet")) {
-	tableheader += model_header_ms_2.replace("[MSPERFUNITS]", scenarioPerfUnits[model]['MultiStream']).replace("[SSPERFUNITS]", scenarioPerfUnits[model]['SingleStream']).replace("[OFFLINEPERFUNITS]", scenarioPerfUnits[model]['Offline']);
-      }
-      else{
-	tableheader += model_header_2.replace("[SSPERFUNITS]", scenarioPerfUnits[model]['SingleStream']).replace("[OFFLINEPERFUNITS]", scenarioPerfUnits[model]['Offline']);
-      }
-    }
+    colspan = 2;
+    colspan_ms = 3;
+    model_header = `
+<th class="col-scenario">ConstantStream</th>
+<th class="col-scenario">SingleStream</th>
+`;
+    model_header_2 = `
+<th class="col-scenario">[CSPERFUNITS]</th>
+<th class="col-scenario">[SSPERFUNITS]</th>
+`;
   }
+  tableheader = `
+    <th id="col-id" class="headcol col-id">ID</th>
+    <th id="col-system" class="headcol col-system">System</th>
+    <th id="col-submitter" class="headcol col-submitter">Submitter</th>
+    <th id="col-accelerator" class="headcol col-accelerator">Accelerator</th>`;
+  for(let model of models_adas_) {
+  tableheader += `
+  <th id="col-model" colspan="${colspan}">${model}</th>
+  `;
+  }
+  tableheader += `
+    </tr>
+    <tr>
+    <th class="headcol col-id"></th>
+    <th class="headcol col-system"></th>
+    <th class="headcol col-submitter"></th>
+    <th class="headcol col-accelerator"></th>`;
+  for(let model of models_adas_) {
+    tableheader += `
+    ${model_header}`;
+  }
+  tableheader += `
+    </tr>
+    <tr>
+    <th class="headcol col-id"></th>
+    <th class="headcol col-system"></th>
+    <th class="headcol col-submitter"></th>
+    <th class="headcol col-accelerator"></th>`;
+  for(let model of models_adas_) {
+    tableheader += model_header_2.replace("[SSPERFUNITS]", scenarioPerfUnits[model]['SingleStream']).replace("[CSPERFUNITS]", scenarioPerfUnits[model]['ConstantStream']);
+    }
+
   html += tableheader;
   html += `</tr></thead>`;
   if(needsFooter) {
@@ -963,7 +696,7 @@ function constructTable(category, division, with_power, availability, data) {
 
     let a_num = mydata[rid]['a#'] || '';
     let acc = a_num === '' ? "" : `${mydata[rid].Accelerator} x ${parseInt(a_num)}`;
-    let system_json_link = mydata[rid].Details.replace("results/", "systems/").replace("submissions_inference_4.0", "inference_results_v4.0") + ".json";
+    let system_json_link = mydata[rid].Details.replace("results/", "systems/").replace("submissions_automotive_0.5", "inference_automotive_v0.5") + ".json";
     let system_summary_link = "https://htmlpreview.github.io/?"+ mydata[rid].Details.replace("tree/", "blob/") +  "/summary.html";
     html += `
       <tr>
@@ -973,32 +706,15 @@ function constructTable(category, division, with_power, availability, data) {
       <td class="col-accelerator headcol"> ${acc} </td>
       `;
     let models = [];
-    if (category == "datacenter") {
-      models = models_datacenter;
-    }
-    else{
-      models = models_edge;
-    }
+    models = models_adas_;
     models.forEach(m => {
       //console.log(mydata[rid][m]);
-      if (category == "datacenter") {
-	if (!m.includes("3d-unet")) { 
-	  scenario_data = get_scenario_td_data(mydata[rid][m], "Server", with_power);
+	
+    scenario_data = get_scenario_td_data(mydata[rid][m], "ConstantStream", with_power);
+    html += scenario_data;
+	  scenario_data = get_scenario_td_data(mydata[rid][m], "SingleStream", with_power);
 	  html += scenario_data;
-	}
-	scenario_data = get_scenario_td_data(mydata[rid][m], "Offline", with_power);
-	html += scenario_data;
-      }
-      else {
-	scenario_data = get_scenario_td_data(mydata[rid][m], "Offline", with_power);
-	html += scenario_data;
-	scenario_data = get_scenario_td_data(mydata[rid][m], "SingleStream", with_power);
-	html += scenario_data;
-	if (m.includes("retinanet") || m.includes("resnet")) {
-	  scenario_data = get_scenario_td_data(mydata[rid][m], "MultiStream", with_power);
-	  html += scenario_data;
-	}
-      }
+      
     });
     html += `</tr>`;
   }
@@ -1015,8 +731,6 @@ function constructTable(category, division, with_power, availability, data) {
 
   return html
 }
-
-
 
 function processData(data, category, division, availability) {
   const myData = {};

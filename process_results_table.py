@@ -176,7 +176,7 @@ def processdata(data, category, division, availability):
     return mydata
 
 import submission_checker as checker
-models_adas = list(checker_module.MODEL_CONFIG[version]["required-scenarios-adas"].keys())
+models_adas = list(checker.MODEL_CONFIG[version]["required-scenarios-adas"].keys())
 
 def get_scenario_result(data, scenario, location_pre, result_link_text):
     html = ''
@@ -467,14 +467,7 @@ hide:
 with open(os.path.join("docs", "index.md"), "w") as f:
     f.write(out_html)
 
-data = {
-    "valid_availabilities": availabilities,
-    "models_adas": models_adas,
-    "scenarios": checker.RESULT_FIELD_NEW[version].keys()
-}
 
-with open("javascripts/checker_constants.json", "w") as f:
-    json.dump(data, f, indent=2)
 
 #print(data)
 

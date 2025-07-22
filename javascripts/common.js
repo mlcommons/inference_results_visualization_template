@@ -14,23 +14,20 @@ var scenarioPerfUnits = {};
 var scenarioPowerUnits = {};
 var accuracyUnits = {};
 var validScenarios = {
-  "edge":  [ "Offline", "SingleStream", "MultiStream" ],
-  "datacenter": [ "Server", "Offline" ]
+  "adas":  [ "SingleStream", "ConstantStream" ]
 }
 var paginationThreshold = 10;
 var footerNeedThreshold = 8;
-models_datacenter_ = [ "llama2-70b-99", "llama2-70b-99.9", "llama2-70b-interactive-99", "llama2-70b-interactive-99.9", "mixtral-8x7b", "gptj-99", "gptj-99.9", "bert-99", "bert-99.9",  "stable-diffusion-xl", "dlrm-v2-99", "dlrm-v2-99.9", "retinanet", "resnet", "3d-unet-99", "3d-unet-99.9", "rnnt", "llama3.1-405b", "rgat"];
-
-models_edge_ = [ "gptj-99", "gptj-99.9", "bert-99", "stable-diffusion-xl", "retinanet", "resnet", "3d-unet-99", "3d-unet-99.9", "rnnt", "pointpainting"];
+models_adas_ = [ "bevformer", "deeplabv3plus", "ssd" ];
 
 models_datacenter = [];
 models_edge = [];
 
 //const dbVersion = 4; defined in config.js
-const objStore = "inference_results";
+const objStore = "automotive_results";
 
-repo_name = repo_name || "inference_results_"+results_version;
-repo_owner = repo_owner || "GATEOverflow";
+repo_name = repo_name || "automotive_results_"+results_version;
+repo_owner = repo_owner || "mlcommons";
 repo_branch = repo_branch || "main";
 const dbName = repo_owner + "_" + repo_name + "_" + repo_branch;
 
@@ -213,32 +210,20 @@ function getUniqueValuesCombined(data, sep, keys) {
 }
 
 function initData(data) {
-  models_datacenter = []
-  models_edge = []
+  models_adas = []
   data.forEach(function(item) {
     //if(item['Category'] != "closed") return;
-    if(item['Suite'].includes("datacenter")) {
-      if(!models_datacenter.includes(item['Model']) && models_datacenter_.includes(item['Model'])) {
-	models_datacenter.push(item['Model']);
+    if(item['Suite'].includes("adas")) {
+      if(!models_adas.includes(item['Model']) && models_adas.includes(item['Model'])) {
+        models_adas.push(item['Model']);
       }
     }
-    if(item['Suite'].includes("edge")) {
-      if(!models_edge.includes(item['Model']) && models_edge_.includes(item['Model'])) {
-	models_edge.push(item['Model']);
-      }
-    }
-    //if(item['Model'] == "llama2-70b-99"
   });
 
-  models_datacenter.sort((a, b) => {
-    return models_datacenter_.indexOf(a) - models_datacenter_.indexOf(b);
-  });
-  models_edge.sort((a, b) => {
-    return models_edge_.indexOf(a) - models_edge_.indexOf(b);
+  models_adas.sort((a, b) => {
+    return models_adas_.indexOf(a) - models_adas_.indexOf(b);
   });
   updateScenarioUnits(data);
-  //    console.log(models_datacenter);
-  //  console.log(models_edge);
 }
 
 

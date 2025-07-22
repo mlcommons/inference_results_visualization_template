@@ -12,7 +12,7 @@ limitations under the License.
 
 
 function reConstructAccvsPerfChart(category) {
-    availabilities = [ "Available", "Preview", "RDI" ]; 
+    availabilities = ["hardened", "development", "engineering_samples", "presilicon"]; 
     availabilities.forEach(function(availability) {
         // filtered data as per the user choice
         //console.log(filteredResults.length);

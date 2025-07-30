@@ -463,7 +463,7 @@ def get_header_table(system_json, version):
 
     html =  f"""<div class="titlebarcontainer">
 <div class="titlebar">
-<h1 class="main-title">MLPerf Inference {version}</h1>
+<h1 class="main-title">MLPerf Automotive {version}</h1>
 <p class="main-title-description">Copyright 2019 - 2025 MLCommons</p>
 <span class="date-right">{month} {year}</span>
 </div>
@@ -474,7 +474,7 @@ def get_header_table(system_json, version):
 <div class="test-details-container table-half">
 <div class="test-details">
 <div class="details-group">
-<span id="license_num" class="details-cell"><a href="https://github.com/mlcommons/inference/blob/master/README.md">MLPerf Inference Category:</a></span>
+<span id="license_num" class="details-cell"><a href="https://github.com/mlcommons/mlperf_automotive/blob/master/README.md">MLPerf Automotive Category:</a></span>
 <span id="license_num_val" class="details-cell">{category}</span>
 </div>
 <div class="details-group">
@@ -488,7 +488,7 @@ def get_header_table(system_json, version):
 <span id="tester_val" class="details-cell">{submitter}</span>
 </div>
 <div class="details-group">
-<span id="test_date" class="details-cell"><a href="https://github.com/mlcommons/inference_policies/blob/master/inference_rules.adoc#divisions">MLPerf Inference Division:</a></span>
+<span id="test_date" class="details-cell"><a href="https://github.com/mlcommons/inference_policies/blob/master/inference_rules.adoc#divisions">MLPerf Automotive Division:</a></span>
 <span id="test_date_val" class="details-cell">{division}</span>
 </div>
 </div>

@@ -14,7 +14,7 @@ fi
 
 repo_owner=${AUTOMOTIVE_RESULTS_REPO_OWNER:-mlcommons}}
 repo_branch=${AUTOMOTIVE_RESULTS_REPO_BRANCH:-main}}
-repo_name=${INFERENCE_RESULTS_REPO_NAME:-inference_results_${INFERENCE_RESULTS_VERSION}}
+repo_name=${AUTOMOTIVE_RESULTS_REPO_NAME:-automotive_results_${AUTOMOTIVE_RESULTS_VERSION}}
 echo "repo owner: ${repo_owner}"
 echo "repo branch: ${repo_branch}"
 echo "repo name: ${repo_name}"
@@ -62,7 +62,7 @@ fi
 if [ -n "${AUTOMOTIVE_RESULTS_VERSION}" ]; then
     repo_to_clone="mlperf_automotive"
 else
-    echo "Please export either INFERENCE_RESULTS_VERSION or AUTOMOTIVE_RESULTS_VERSION."
+    echo "Please export AUTOMOTIVE_RESULTS_VERSION."
     exit 1
 fi
 

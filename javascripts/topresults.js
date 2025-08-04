@@ -132,7 +132,9 @@ function constructTable(division, scenario, model, metric, result) {
         html += "<tr>";
         const platform = row.Platform;
         const resultid = row.ID;
-	let system_json_link = row['Details'].replace("/results/", "/systems/").replace("submissions_inference_4.0", "inference_results_v4.0") + ".json"
+	let system_json_link = row['Details'].replace("/results/", "/systems/") + ".json"
+	// comment the above line and uncomment the below line in when the submission results becomes public
+	//let system_json_link = row['Details'].replace("/results/", "/systems/").replace("submissions_inference_v5.1", "inference_results_v5.1") + ".json"
         //const location = `https://github.com/mlcommons/inference_results_${version}/tree/main/${row.Location}`;
         // html += `<td title="${resultid}" class='location'><a target="_blank" href="${system_json_link}">${platform}</a></td>`;
         html += `<td title="${platform}">${row.ID}</td>`;

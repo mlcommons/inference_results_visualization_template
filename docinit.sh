@@ -45,34 +45,6 @@ if [ ! -e docs/thirdparty/tablesorter ]; then
     test $? -eq 0 || exit $?
 fi
 
-# Ensure topresults/thirdparty/tablesorter exists
-if [ ! -e docs/top_results/thirdparty ]; then
-    mkdir -p docs/topresults
-    cp -r docs/thirdparty docs/top_results/thirdparty
-    test $? -eq 0 || exit $?
-fi
-
-# Ensure compare/thirdparty/tablesorter exists
-if [ ! -e docs/compare/thirdparty ]; then
-    mkdir -p docs/compare
-    cp -r docs/thirdparty docs/compare/thirdparty
-    test $? -eq 0 || exit $?
-fi
-
-# Ensure topresults/javascripts exists
-if [ ! -e docs/top_results/javascripts ]; then
-    mkdir -p docs/topresults
-    cp -r docs/javascripts docs/top_results/javascripts
-    test $? -eq 0 || exit $?
-fi
-
-# Ensure compare/javascripts exists
-if [ ! -e docs/compare/javascripts ]; then
-    mkdir -p docs/compare
-    cp -r docs/javascripts docs/compare/javascripts
-    test $? -eq 0 || exit $?
-fi
-
 if [ ! -e process_results_table.py ]; then
     cp docs/process_results_table.py .
     test $? -eq 0 || exit $?

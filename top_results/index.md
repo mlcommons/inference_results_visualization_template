@@ -69,6 +69,7 @@ hide:
                 <option value='Server'>Server</option>
                 <option value='SingleStream'>SingleStream</option>
                 <option value='MultiStream'>MultiStream</option>
+                <option value='Interactive'>Interactive</option>
             </select>
         </div>
 

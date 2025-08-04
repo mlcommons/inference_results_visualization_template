@@ -634,7 +634,7 @@ function constructOpenTableModel(model, category, with_power, availability, myda
 
     let a_num = mydata[rid]['a#'] || '';
     let acc = a_num === '' ? "" : `${mydata[rid].Accelerator} x ${parseInt(a_num)}`;
-    let system_json_link = mydata[rid].Details.replace("/results/", "/systems/").replace("submissions_inference_4.0", "inference_results_v4.0") + ".json";
+	let system_json_link = mydata[rid].Details.replace("/results/", "/systems/") + ".json";
     let system_info_link = mydata[rid].Details.replace("/results/", "/measurements/") + "/system_info.txt";
     html += `
       <tr>
@@ -963,7 +963,7 @@ function constructTable(category, division, with_power, availability, data) {
 
     let a_num = mydata[rid]['a#'] || '';
     let acc = a_num === '' ? "" : `${mydata[rid].Accelerator} x ${parseInt(a_num)}`;
-    let system_json_link = mydata[rid].Details.replace("results/", "systems/").replace("submissions_inference_4.0", "inference_results_v4.0") + ".json";
+	let system_json_link = mydata[rid].Details.replace("/results/", "/systems/") + ".json";
     let system_summary_link = "https://htmlpreview.github.io/?"+ mydata[rid].Details.replace("tree/", "blob/") +  "/summary.html";
     html += `
       <tr>

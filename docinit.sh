@@ -15,8 +15,13 @@ fi
 repo_owner=${INFERENCE_RESULTS_REPO_OWNER:-mlcommons}
 repo_branch=${INFERENCE_RESULTS_REPO_BRANCH:-main}
 repo_name=${INFERENCE_RESULTS_REPO_NAME:-inference_results_${INFERENCE_RESULTS_VERSION}}
+echo "repo owner: ${repo_owner}"
+echo "repo branch: ${repo_branch}"
+echo "repo name: ${repo_name}"
+
 ver_num=$(cat dbversion)
 let ver_num++
+echo "$ver_num" > dbversion
 
 rm -f docs/javascripts/config.js
 
@@ -37,6 +42,34 @@ fi
 
 if [ ! -e docs/thirdparty/tablesorter ]; then
     cd docs/thirdparty && git clone https://github.com/Mottie/tablesorter.git && cd -
+    test $? -eq 0 || exit $?
+fi
+
+# Ensure topresults/thirdparty/tablesorter exists
+if [ ! -e docs/top_results/thirdparty ]; then
+    mkdir -p docs/topresults
+    cp -r docs/thirdparty docs/top_results/thirdparty
+    test $? -eq 0 || exit $?
+fi
+
+# Ensure compare/thirdparty/tablesorter exists
+if [ ! -e docs/compare/thirdparty ]; then
+    mkdir -p docs/compare
+    cp -r docs/thirdparty docs/compare/thirdparty
+    test $? -eq 0 || exit $?
+fi
+
+# Ensure topresults/javascripts exists
+if [ ! -e docs/top_results/javascripts ]; then
+    mkdir -p docs/topresults
+    cp -r docs/javascripts docs/top_results/javascripts
+    test $? -eq 0 || exit $?
+fi
+
+# Ensure compare/javascripts exists
+if [ ! -e docs/compare/javascripts ]; then
+    mkdir -p docs/compare
+    cp -r docs/javascripts docs/compare/javascripts
     test $? -eq 0 || exit $?
 fi
 

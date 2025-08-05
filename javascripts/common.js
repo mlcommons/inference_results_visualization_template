@@ -15,7 +15,7 @@ var scenarioPowerUnits = {};
 var accuracyUnits = {};
 var validScenarios = {
   "edge":  [ "Offline", "SingleStream", "MultiStream" ],
-  "datacenter": [ "Server", "Offline" ]
+  "datacenter": [ "Server", "Interactive", "Offline" ]
 }
 var paginationThreshold = 10;
 var footerNeedThreshold = 8;

@@ -437,6 +437,9 @@ function constructOpenTableModel(model, category, with_power, availability, myda
       if(scenarioPerfUnits[model].hasOwnProperty("Server")) {
       model_header += `<th class="col-scenario" colspan="4">Server</th>`;
       }
+      if(scenarioPerfUnits[model].hasOwnProperty("Interactive")) {
+        model_header += `<th class="col-scenario" colspan="4">Interactive</th>`;
+      }
       if(scenarioPerfUnits[model].hasOwnProperty("Offline")) {
 	model_header +=	`<th class="col-scenario" colspan="4">Offline</th>`;
       }
@@ -449,6 +452,14 @@ function constructOpenTableModel(model, category, with_power, availability, myda
 	<th class="col-scenario">${scenarioPowerUnits['Server']}</th>
 	<th class="col-scenario">Samples/J</th>
 	  `;
+      }
+      if(scenarioPerfUnits[model].hasOwnProperty("Interactive")) {
+        model_header_2 += `
+	<th class="col-scenario">Accuracy</th>
+	<th class="col-scenario">${scenarioPerfUnits[model]['Interactive']}</th>
+	<th class="col-scenario">${scenarioPowerUnits['Interactive']}</th>
+	<th class="col-scenario">Samples/J</th>
+	`;
       }
       if(scenarioPerfUnits[model].hasOwnProperty("Offline")) {
       model_header_2 += `
@@ -479,16 +490,25 @@ function constructOpenTableModel(model, category, with_power, availability, myda
       if(scenarioPerfUnits[model].hasOwnProperty("Server")) {
       model_header += `<th class="col-scenario" colspan="2">Server</th>`;
       }
+      if(scenarioPerfUnits[model].hasOwnProperty("Interactive")) {
+        model_header += `<th class="col-scenario" colspan="2">Interactive</th>`;
+      }
       if(scenarioPerfUnits[model].hasOwnProperty("Offline")) {
 	model_header += `<th class="col-scenario" colspan="2">Offline</th>`;
       }
       model_header_2 = ``;
       if(scenarioPerfUnits[model].hasOwnProperty("Server")) {
-      	model_header_2 += `
-	<th class="col-scenario">${accuracyUnits[model]}</th>
-	<th class="col-scenario">${scenarioPerfUnits[model]['Server']}</th>
-	  `;
-      }
+          model_header_2 += `
+    <th class="col-scenario">${accuracyUnits[model]}</th>
+    <th class="col-scenario">${scenarioPerfUnits[model]['Server']}</th>
+      `;
+        }
+        if(scenarioPerfUnits[model].hasOwnProperty("Interactive")) {
+          model_header_2 += `
+    <th class="col-scenario">${accuracyUnits[model]}</th>
+    <th class="col-scenario">${scenarioPerfUnits[model]['Interactive']}</th>
+      `;
+        }
       if(scenarioPerfUnits[model].hasOwnProperty("Offline")) {
       	model_header_2 += `
 	<th class="col-scenario">${accuracyUnits[model]}</th>
@@ -634,7 +654,7 @@ function constructOpenTableModel(model, category, with_power, availability, myda
 
     let a_num = mydata[rid]['a#'] || '';
     let acc = a_num === '' ? "" : `${mydata[rid].Accelerator} x ${parseInt(a_num)}`;
-	let system_json_link = mydata[rid].Details.replace("/results/", "/systems/") + ".json";
+    let system_json_link = mydata[rid].Details.replace("/results/", "/systems/").replace("submissions_inference_4.0", "inference_results_v4.0") + ".json";
     let system_info_link = mydata[rid].Details.replace("/results/", "/measurements/") + "/system_info.txt";
     html += `
       <tr>
@@ -666,10 +686,15 @@ function constructOpenTableModel(model, category, with_power, availability, myda
 	scenario_data = get_scenario_td_data(mydata[rid][model], "Server", with_power, true);
 	html += scenario_data;
       }
+      if(scenarioPerfUnits[model].hasOwnProperty("Interactive")) {
+        scenario_data = get_scenario_td_data(mydata[rid][model], "Interactive", with_power, true);
+        html += scenario_data;
+      }
       if(scenarioPerfUnits[model].hasOwnProperty("Offline")) {
       scenario_data = get_scenario_td_data(mydata[rid][model], "Offline", with_power, true);
       html += scenario_data;
       }
+      
     }
     else {
       if(scenarioPerfUnits[model].hasOwnProperty("Offline")) {
@@ -759,12 +784,16 @@ function constructTable(category, division, with_power, availability, data) {
       colspan_single = 3;
       model_header = `
 	<th class="col-scenario" colspan="3">Server</th>
+	<th class="col-scenario" colspan="3">Interactive</th>
 	<th class="col-scenario" colspan="3">Offline</th>
 	`;
       //console.log(scenarioPerfUnits);
       model_header_2 = `
 	<th class="col-scenario">[SERVERPERFUNITS]</th>
 	<th class="col-scenario">${scenarioPowerUnits['Server']}</th>
+	<th class="col-scenario">Samples/J</th>
+	<th class="col-scenario">[INTERACTIVEPERFUNITS]</th>
+	<th class="col-scenario">${scenarioPowerUnits['Interactive']}</th>
 	<th class="col-scenario">Samples/J</th>
 	<th class="col-scenario">[OFFLINEPERFUNITS]</th>
 	<th class="col-scenario">${scenarioPowerUnits['Offline']}</th>
@@ -780,14 +809,16 @@ function constructTable(category, division, with_power, availability, data) {
 	`;
     }
     else {
-      colspan = 2;
+      colspan = 3;
       colspan_single = 1;
       model_header = `
 	<th class="col-scenario">Server</th>
+	<th class="col-scenario">Interactive</th>
 	<th class="col-scenario">Offline</th>
 	`;
       model_header_2 = `
 	<th class="col-scenario">[SERVERPERFUNITS]</th>
+	<th class="col-scenario">[INTERACTIVEPERFUNITS]</th>
 	<th class="col-scenario">[OFFLINEPERFUNITS]</th>
 	`;
       model_header_single = `
@@ -845,7 +876,7 @@ function constructTable(category, division, with_power, availability, data) {
 	tableheader += model_header_single_2.replace("[OFFLINEPERFUNITS]", scenarioPerfUnits[model]['Offline']);
       }
       else{
-	tableheader += model_header_2.replace("[SERVERPERFUNITS]", scenarioPerfUnits[model]['Server']).replace("[OFFLINEPERFUNITS]", scenarioPerfUnits[model]['Offline']);
+	tableheader += model_header_2.replace("[SERVERPERFUNITS]", scenarioPerfUnits[model]['Server']).replace("[INTERACTIVEPERFUNITS]", scenarioPerfUnits[model]['Interactive']).replace("[OFFLINEPERFUNITS]", scenarioPerfUnits[model]['Offline']);
       }
     }
   }
@@ -963,7 +994,7 @@ function constructTable(category, division, with_power, availability, data) {
 
     let a_num = mydata[rid]['a#'] || '';
     let acc = a_num === '' ? "" : `${mydata[rid].Accelerator} x ${parseInt(a_num)}`;
-	let system_json_link = mydata[rid].Details.replace("/results/", "/systems/") + ".json";
+    let system_json_link = mydata[rid].Details.replace("results/", "systems/").replace("submissions_inference_4.0", "inference_results_v4.0") + ".json";
     let system_summary_link = "https://htmlpreview.github.io/?"+ mydata[rid].Details.replace("tree/", "blob/") +  "/summary.html";
     html += `
       <tr>
@@ -984,6 +1015,8 @@ function constructTable(category, division, with_power, availability, data) {
       if (category == "datacenter") {
 	if (!m.includes("3d-unet")) { 
 	  scenario_data = get_scenario_td_data(mydata[rid][m], "Server", with_power);
+	  html += scenario_data;
+	  scenario_data = get_scenario_td_data(mydata[rid][m], "Interactive", with_power);
 	  html += scenario_data;
 	}
 	scenario_data = get_scenario_td_data(mydata[rid][m], "Offline", with_power);

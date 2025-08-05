@@ -141,7 +141,7 @@ $(document).ready(function() {
 
 // scenarios, system1, sysversion1, system2, sysversion2, data, ytitle_scenarios
 function reConstructTables(system1, sysversion1, system2, sysversion2, selected_models, data) {
-    myscenarios = [ "Offline", "Server", "SingleStream", "MultiStream"];
+    myscenarios = [ "Offline", "Server", "Interactive", "SingleStream", "MultiStream"];
 
     myscenarios.forEach(function(scenario) {
 

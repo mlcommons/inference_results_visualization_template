@@ -562,10 +562,10 @@ $(document).ready(function() {
     `;
         }
         if(scenarioPerfUnits[model].hasOwnProperty("MultiStream")) {
-        model_header_ms = model_header + `
+        model_header = model_header + `
     <th class="col-scenario" colspan="4">MultiStream</th>
     `;
-        model_header_ms_2 = model_header_2 + `
+        model_header_2 = model_header_2 + `
     <th class="col-scenario">${accuracyUnits[model]}</th>
     <th class="col-scenario">${scenarioPerfUnits[model]['MultiStream']}</th>
     <th class="col-scenario">${scenarioPowerUnits['MultiStream']}</th>

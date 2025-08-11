@@ -809,16 +809,24 @@ $(document).ready(function() {
         <th id="col-system" class="headcol col-system">System</th>
         <th id="col-submitter" class="headcol col-submitter">Submitter</th>
         <th id="col-accelerator" class="headcol col-accelerator">Accelerator</th>`
-      for(let model of models_datacenter) {
-        const hasInteractive = scenarioPerfUnits[model]?.hasOwnProperty("Interactive");
-        let span = model.includes("3d-unet")
-            ? colspan_single
-            : (with_power
-            ? (hasInteractive ? 9 : 6)
-            : (hasInteractive ? 3 : 2));
-
+      for (let model of models_datacenter) {
+        const scenariosToCheck = validScenarios['datacenter']
+        // Filter to only the scenarios that actually exist for this model
+        const presentScenarios = scenariosToCheck.filter(
+            scenario => scenarioPerfUnits[model]?.hasOwnProperty(scenario)
+        );
+        const scenarioCount = presentScenarios.length;
+        // Skip if no scenarios
+        if (scenarioCount === 0) continue;
+        let span;
+        // Special case for 3d-unet
+        if (model.includes("3d-unet")) {
+            span = colspan_single; // keep your existing special value
+        } else {
+            span = with_power ? scenarioCount * 3 : scenarioCount;
+        }
         tableheader += `
-    <th id="col-model" colspan=${span}>${model}</th>`;
+        <th id="col-model" colspan=${span}>${model}</th>`;
       }
       tableheader += `
         </tr>

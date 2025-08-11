@@ -10,6 +10,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================================================*/
 
+let chart1 = null, chart2 = null, chart3 = null;
+
 function extractDataFromTable(tableId, colIndex) {
     var data = [];
     $(tableId + " tbody tr td:nth-child(" + colIndex + ")").each(function() {
@@ -131,35 +133,36 @@ function drawPerfCharts() {
         dataPoints: modelsData3
     }] : [];
 
-    var chart1 = renderChart("chartContainer1", chart1title, chart1ytitle, chart1Data);
+    chart1 = renderChart("chartContainer1", chart1title, chart1ytitle, chart1Data);
     chart1.render();
 
     if (additional_metric.length > 0) {
-        var chart2 = renderChart("chartContainer2", chart2title, chart2ytitle, chart2Data);
+        chart2 = renderChart("chartContainer2", chart2title, chart2ytitle, chart2Data);
         chart2.render();
+    } else {
+        chart2 = null;
     }
 
     if (accuracy.length > 0) {
-        var chart3 = renderChart("chartContainer3", chart3title, chart3ytitle, chart3Data);
+        chart3 = renderChart("chartContainer3", chart3title, chart3ytitle, chart3Data);
         chart3.render();
+    } else {
+        chart3 = null;
     }
 }
 
-if (document.getElementById("printChart1")) {
-    document.getElementById("printChart1").addEventListener("click", function() {
-        chart1.exportChart({ format: "png" });
-    });
-}
-if (document.getElementById("printChart2")) {
-    document.getElementById("printChart2").addEventListener("click", function() {
-        chart2.exportChart({ format: "png" });
-    });
-}
-if (document.getElementById("printChart3")) {
-    document.getElementById("printChart3").addEventListener("click", function() {
-        chart3.exportChart({ format: "png" });
-    });
-}
+
+$(document).ready(function() {
+    if (document.getElementById("printChart1")) {
+        $("#printChart1").on("click", () => chart1.exportChart({ format: "png" }));
+    }
+    if (document.getElementById("printChart2")) {
+        $("#printChart2").on("click", () => chart2.exportChart({ format: "png" }));
+    }
+    if (document.getElementById("printChart3")) {
+        $("#printChart3").on("click", () => chart3.exportChart({ format: "png" }));
+    }
+});
 
 $(document).on("click", "thead th", function() {
     drawPerfCharts();

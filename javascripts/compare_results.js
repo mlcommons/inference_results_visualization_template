@@ -143,6 +143,10 @@ $(document).ready(function() {
 function reConstructTables(system1, sysversion1, system2, sysversion2, selected_models, data) {
     myscenarios = [ "Offline", "Server", "SingleStream", "MultiStream"];
 
+    // Split the system name to allign with results summary
+    system1 = system1.split(":")[1];
+    system2 = system2.split(":")[1];
+    
     myscenarios.forEach(function(scenario) {
 
     let keys = ["Scenario", "Platform", "version"];

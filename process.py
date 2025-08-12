@@ -18,17 +18,17 @@ import json
 import os
 
 # Gets unique value from data based on particular key
-# For keys other than Platform, returns list 
-# and for platform, it returns dictionary(id as key and 
-# submitter:platform as value)
+# For keys other than System, returns list 
+# and for system, it returns dictionary(id as key and 
+# submitter:system as value)
 def getuniquevalues(data, key):
-    if str(key) == "Platform":
+    if str(key) == "System":
         result = {}
         for item in data:
-            platform = item.get("Platform")
+            system = item.get("System")
             submitter = item.get("Submitter")
             id = item.get("ID")
-            result[id] = f"{submitter}:{platform}"
+            result[id] = f"{submitter}:{system}"
         return result
     uniquevalues = []
     for item in data:
@@ -40,7 +40,7 @@ with open('summary_results.json') as f:
     data = json.load(f)
 models_all = getuniquevalues(data, "Model")
 models_all.insert(0, "All models")
-platforms = getuniquevalues(data, "Platform")
+systems = getuniquevalues(data, "System")
 #print(models_all)
 #print(platforms)
 
@@ -162,7 +162,7 @@ def process_scenarios(system1, system2, sysversion1, sysversion2, modelfilterstr
     
     customid = 1
     for scenario in scenarios:
-        keys = [ "Scenario", "Platform", "version" ]
+        keys = [ "Scenario", "System", "version" ]
         values = [ scenario, system1, sysversion1 ]
         result1 = filterdata(data, keys, values)
         content[f'custom_{customid}'] = f""
@@ -250,7 +250,7 @@ def process_scenarios(system1, system2, sysversion1, sysversion2, modelfilterstr
 
 
 #print(data)
-def generate_html_form(platforms, models_all, data1=None, data2=None, modelsdata=None):
+def generate_html_form(systems, models_all, data1=None, data2=None, modelsdata=None):
     # Setting default values if not provided
     if not data1:
         data1 = ''
@@ -268,8 +268,8 @@ def generate_html_form(platforms, models_all, data1=None, data2=None, modelsdata
             html += f"<option value='{key}' {selected}>{value}</option>\n"
         return html
 
-    system1_options = generate_select_options(platforms, data1)
-    system2_options = generate_select_options(platforms, data2)
+    system1_options = generate_select_options(systems, data1)
+    system2_options = generate_select_options(systems, data2)
 
     # Create select options for models
     models_options = generate_select_options(models_all, modelsdata)
@@ -339,10 +339,10 @@ out_html += """
 data1 = None
 data2 = None
 modelsdata = None
-platforms_data = {v:k for v,k in enumerate(platforms)}
+systems_data = {v:k for v,k in enumerate(systems)}
 models_data = {v:k for v,k in enumerate(models_all)}
 # Generate the HTML form
-html_form = generate_html_form(platforms_data, models_data, data1, data2, modelsdata)
+html_form = generate_html_form(systems_data, models_data, data1, data2, modelsdata)
 
 # Output the generated HTML
 out_html = f"""---

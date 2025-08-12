@@ -339,10 +339,9 @@ out_html += """
 data1 = None
 data2 = None
 modelsdata = None
-systems_data = {v:k for v,k in enumerate(systems)}
 models_data = {v:k for v,k in enumerate(models_all)}
 # Generate the HTML form
-html_form = generate_html_form(systems_data, models_data, data1, data2, modelsdata)
+html_form = generate_html_form(systems, models_data, data1, data2, modelsdata)
 
 # Output the generated HTML
 out_html = f"""---

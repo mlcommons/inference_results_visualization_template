@@ -17,7 +17,19 @@
 import json
 import os
 
+# Gets unique value from data based on particular key
+# For keys other than Platform, returns list 
+# and for platform, it returns dictionary(id as key and 
+# submitter:platform as value)
 def getuniquevalues(data, key):
+    if str(key) == "Platform":
+        result = {}
+        for item in data:
+            platform = item.get("Platform")
+            submitter = item.get("Submitter")
+            id = item.get("ID")
+            result[id] = f"{submitter}:{platform}"
+        return result
     uniquevalues = []
     for item in data:
         if item.get(key) and item.get(key) not in uniquevalues:

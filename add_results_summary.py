@@ -695,8 +695,10 @@ def get_table_header(division, category):
 <th rowspan="2" class="th-parent">Accuracy Target</th>
 """
     if "datacenter" in category:
-        num_scenarios += 1
+        num_scenarios += 2
         html_table_head += f"""<th colspan="{colspan}">Server</th>
+"""
+        html_table_head += f"""<th colspan="{colspan}">Interactive</th>
 """
 
     html_table_head += f"""<th colspan="{colspan}">Offline</th>
@@ -826,6 +828,10 @@ for details, entries in tables.items():
                                 html_table += scenario_missing_td
                             else:
                                 html_table += f"""<td class="na" colspan="{colspan}"> N/A </td>"""
+                        if "Interactive" in data[model]:
+                            if division == "open":
+                                html_table += f"""<td class="accuracy">{round_dict_values(data[model]["Interactive"]["Accuracy"])}</td>"""
+                            html_table += f"""<td class="units">{data[model]["Interactive"]["Performance_Units"]}</td> <td class="perf">{data[model]["Interactive"]["Performance_Result"]:.2f}</td>"""
 
                     if "Offline" in data[model]:
                         if division == "open":

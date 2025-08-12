@@ -146,10 +146,11 @@ def construct_table(scenario, models, data1, data2, is_power, results1, results2
 
 
 def process_scenarios(system1, system2, sysversion1, sysversion2, modelfilterstring):
-    scenarios = ["Offline", "Server", "SingleStream", "MultiStream"]
+    scenarios = ["Offline", "Server", "Interactive", "SingleStream", "MultiStream"]
     ytitle_scenarios = {
         "Offline": "Samples per Second",
         "Server": "Samples per Second",
+        "Interactive": "Samples per Second",
         "SingleStream": "Latency per sample in milliseconds",
         "MultiStream": "Latency per query of 8 samples in milliseconds",
     }

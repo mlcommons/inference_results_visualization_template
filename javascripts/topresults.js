@@ -132,8 +132,8 @@ function constructTable(division, scenario, model, metric, result) {
         html += "<tr>";
         const platform = row.Platform;
         const resultid = row.ID;
-	// Just for backward compatibility with 4.0
-	let system_json_link = row['Details'].replace("/results/", "/systems/").replace("submissions_inference_v4.0", "inference_results_v4.0") + ".json"
+	// just for backward compatability with 4.0
+	let system_json_link = row['Details'].replace("/results/", "/systems/").replace("submissions_inference_4.0", "inference_results_v4.0") + ".json"
         //const location = `https://github.com/mlcommons/inference_results_${version}/tree/main/${row.Location}`;
         // html += `<td title="${resultid}" class='location'><a target="_blank" href="${system_json_link}">${platform}</a></td>`;
         html += `<td title="${platform}">${row.ID}</td>`;
@@ -167,7 +167,7 @@ function constructTable(division, scenario, model, metric, result) {
             let value;
             if (metric === "power_efficiency") {
                 let power_efficiency;
-                if (scenario === "Offline" || scenario === "Server") {
+                if (scenario === "Offline" || scenario === "Server" || scenario === "Interactive") {
                     power_efficiency = (row.Performance_Result / row.Power_Result).toFixed(2);
                 } else if (scenario === "SingleStream") {
                     power_efficiency = (1000 / row.Power_Result).toFixed(2);
@@ -339,7 +339,7 @@ $(document).ready(function() {
         var models = getUniqueValues(myData, "Model");
 
         additional_metric_column_name = "";
-        if(scenario == "Offline" || scenario == "Server") {
+        if(scenario == "Offline" || scenario == "Server" || scenario == "Interactive") {
             perfsortorder = 1;
         }
         else {

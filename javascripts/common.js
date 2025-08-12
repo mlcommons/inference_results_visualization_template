@@ -15,13 +15,13 @@ var scenarioPowerUnits = {};
 var accuracyUnits = {};
 var validScenarios = {
   "edge":  [ "Offline", "SingleStream", "MultiStream" ],
-  "datacenter": [ "Server", "Offline" ]
+  "datacenter": [ "Server", "Interactive", "Offline" ]
 }
 var paginationThreshold = 10;
 var footerNeedThreshold = 8;
-models_datacenter_ = [ "llama2-70b-99", "llama2-70b-99.9", "llama2-70b-interactive-99", "llama2-70b-interactive-99.9", "mixtral-8x7b", "gptj-99", "gptj-99.9", "bert-99", "bert-99.9",  "stable-diffusion-xl", "dlrm-v2-99", "dlrm-v2-99.9", "retinanet", "resnet", "3d-unet-99", "3d-unet-99.9", "rnnt", "llama3.1-405b", "rgat"];
+models_datacenter_ = [ "llama2-70b-99", "llama2-70b-99.9", "llama2-70b-interactive-99", "llama2-70b-interactive-99.9", "mixtral-8x7b", "gptj-99", "gptj-99.9", "bert-99", "bert-99.9",  "stable-diffusion-xl", "dlrm-v2-99", "dlrm-v2-99.9", "retinanet", "resnet", "3d-unet-99", "3d-unet-99.9", "rnnt", "llama3.1-405b", "rgat", "deepseek-r1", "whisper", "llama3.1-8b"];
 
-models_edge_ = [ "gptj-99", "gptj-99.9", "bert-99", "stable-diffusion-xl", "retinanet", "resnet", "3d-unet-99", "3d-unet-99.9", "rnnt", "pointpainting"];
+models_edge_ = [ "gptj-99", "gptj-99.9", "bert-99", "stable-diffusion-xl", "retinanet", "resnet", "3d-unet-99", "3d-unet-99.9", "rnnt", "pointpainting", "whisper", "llama3.1-8b-edge"];
 
 models_datacenter = [];
 models_edge = [];

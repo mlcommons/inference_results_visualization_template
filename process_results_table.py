@@ -241,6 +241,7 @@ def construct_table(category, division, availability):
             else:
                 tableheader += f"""
                 <th class="col-scenario">Server</th>
+                <th class="col-scenario">Interactive</th>
                 <th class="col-scenario">Offline</th>
                 """
     else: # category == "edge":
@@ -319,7 +320,8 @@ Notes: {mydata[rid]['Notes']}
             if mydata[rid].get(m):
                 if category == "datacenter" and "3d-unet" not in m:#dc
                     html +=  get_scenario_result(mydata[rid][m], "Server", location_pre, result_link_text)
-                    
+                    html +=  get_scenario_result(mydata[rid][m], "Interactive", location_pre, result_link_text)
+
                 html +=  get_scenario_result(mydata[rid][m], "Offline", location_pre, result_link_text)
                 
                 if category == "edge": #Process SS and MS

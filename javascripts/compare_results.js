@@ -151,7 +151,7 @@ function reConstructTables(system1, sysversion1, system2, sysversion2, selected_
     
     myscenarios.forEach(function(scenario) {
 
-    let keys = ["Scenario", "Platform", "version", "Submitter"];
+    let keys = ["Scenario", "System", "version", "Submitter"];
     let values = [scenario, system1, sysversion1, submitter1];
     //console.log(scenario);    
 

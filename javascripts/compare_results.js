@@ -144,13 +144,15 @@ function reConstructTables(system1, sysversion1, system2, sysversion2, selected_
     myscenarios = [ "Offline", "Server", "SingleStream", "MultiStream"];
 
     // Split the system name to allign with results summary
+    submitter1 = system1.split(":")[0];
+    submitter2 = system2.split(":")[0];
     system1 = system1.split(":")[1];
     system2 = system2.split(":")[1];
     
     myscenarios.forEach(function(scenario) {
 
-    let keys = ["Scenario", "Platform", "version"];
-    let values = [scenario, system1, sysversion1];
+    let keys = ["Scenario", "Platform", "version", "Submitter"];
+    let values = [scenario, system1, sysversion1, submitter1];
     //console.log(scenario);    
 
     //console.log(selected_models);
@@ -167,7 +169,7 @@ function reConstructTables(system1, sysversion1, system2, sysversion2, selected_
         return; // Continue to the next scenario
     }
 
-    values = [scenario, system2, sysversion2];
+    values = [scenario, system2, sysversion2,  submitter2];
     let result2 = filterData(data, keys, values);
     if(!selected_models.includes("All models")) {
         result2 = filterDataFromValues(result2, "Model", selected_models);

@@ -351,7 +351,7 @@ modelsdata = None
 models_data = {v:k for v,k in enumerate(models_all)}
 categories = {v:k for v,k in enumerate(["Datacenter", "Edge"])}
 # Generate the HTML form
-html_form = generate_html_form(systems_data, models_data, data1, data2, modelsdata, categories)
+html_form = generate_html_form(systems, models_data, data1, data2, modelsdata, categories)
 
 # Output the generated HTML
 out_html = f"""---

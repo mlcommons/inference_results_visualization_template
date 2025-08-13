@@ -10,6 +10,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================================================*/
 
+let allCachedData = null;
+
 function construct_table(scenario, models, data1, data2, isPower, results1, results2) {
     let html = ``;
     html += `<thead><tr>`;
@@ -82,7 +84,36 @@ function construct_table(scenario, models, data1, data2, isPower, results1, resu
     return html;
 }
 
+function updateSystemDropdowns(selected_category, allData) {
+    $('#system1').empty();
+    $('#system2').empty();
+    console.log(selected_category);
+    let keys = ["Suite",  "Category"];
+    let values = [selected_category, "closed"];
+    let filteredSystems = filterData(allData, keys, values);
+    console.log(filteredSystems)
 
+    let seen = new Set();
+    let index = 0;
+
+    filteredSystems.forEach(function(item) {
+        let displayName = `${item.Submitter} : ${item.System}`;
+        if (!seen.has(displayName)) {
+            seen.add(displayName);
+
+            $('#system1').append($('<option>', {
+                value: index,
+                text: displayName
+            }));
+            $('#system2').append($('<option>', {
+                value: index,
+                text: displayName
+            }));
+
+            index++;
+        }
+    });
+}
 
 
 $( document ).on( "click", "#results_Offline thead th", function() {
@@ -100,16 +131,26 @@ $( document ).on( "click", "#results_MultiStream thead th", function() {
 
 
 $(document).ready(function() {
-    //if(!is_power) 
-    {
-        $('.power-content').hide();
-    }
-    tableSorterInit();
-    $('#compareform').submit(function(event) {
-        event.preventDefault(); // This will cancel the form submission
+    // Call once and store
+    readAllData().then(function(allData) {
+        allDataCache = allData;
+    }).catch(console.error);
 
-        // Your custom logic here
-        //console.log('Form submission canceled.');
+    // Category change uses the cached data
+    $('#category').on('change', function() {
+        var selectedCategory = $('#category option:selected').text().toLowerCase();
+        console.log(selectedCategory)
+        if (allDataCache) {
+            updateSystemDropdowns(selectedCategory, allDataCache);
+        } else {
+            console.error("allData not loaded yet");
+        }
+    });
+
+    // Compare form submission
+    $('#compareform').submit(function(event) {
+        event.preventDefault();
+
         var system1 = $('#system1 option:selected').text();
         var system2 = $('#system2 option:selected').text();
         var selected_category = $('#category option:selected').text().toLowerCase();
@@ -117,27 +158,15 @@ $(document).ready(function() {
             return $(this).text();
         }).get();
 
-        //console.log(system1);
-        //console.log(system2);
-        //console.log(selected_models);
-        //scenario = "Offline";
-        //getSummaryData();
-        /*   constructTable(scenario, models, system1, system2, False, results1, results2) {
+        if (!allDataCache) {
+            console.error("allData not loaded yet");
+            return;
+        }
 
-        // Optionally, you can handle the form data yourself
-        */
-        readAllData().then(function(allData) {
-//            console.log(allData);
-            sysversion1 = results_version;
-            sysversion2 = results_version;
-            reConstructTables(system1, sysversion1, system2, sysversion2, selected_models, selected_category, allData);
-        }).catch(function(error) {
-            console.error(error);
-        });
-      }
-    );
-
-        //fetchSummaryData();
+        var sysversion1 = results_version;
+        var sysversion2 = results_version;
+        reConstructTables(system1, sysversion1, system2, sysversion2, selected_models, selected_category, allDataCache);
+    });
 });
 
 // scenarios, system1, sysversion1, system2, sysversion2, data, ytitle_scenarios
@@ -152,8 +181,8 @@ function reConstructTables(system1, sysversion1, system2, sysversion2, selected_
     
     myscenarios.forEach(function(scenario) {
 
-    let keys = ["Scenario", "System", "version", "Submitter", "Suite"];
-    let values = [scenario, system1, sysversion1, submitter1, selected_category];
+    let keys = ["Scenario", "System", "version", "Submitter", "Suite", "Category"];
+    let values = [scenario, system1, sysversion1, submitter1, selected_category, "closed"];
     //console.log(scenario);    
 
     //console.log(selected_models);
@@ -170,7 +199,7 @@ function reConstructTables(system1, sysversion1, system2, sysversion2, selected_
         return; // Continue to the next scenario
     }
 
-    values = [scenario, system2, sysversion2,  submitter2, selected_category];
+    values = [scenario, system2, sysversion2,  submitter2, selected_category, "closed"];
     let result2 = filterData(data, keys, values);
     if(!selected_models.includes("All models")) {
         result2 = filterDataFromValues(result2, "Model", selected_models);

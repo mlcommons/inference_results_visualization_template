@@ -28,7 +28,7 @@ def getuniquevalues(data, key):
             system = item.get("System")
             submitter = item.get("Submitter")
             id = item.get("ID")
-            result[id] = f"{submitter}:{system}"
+            result[id] = f"{submitter} : {system}"
         return result
     uniquevalues = []
     for item in data:
@@ -251,7 +251,7 @@ def process_scenarios(system1, system2, sysversion1, sysversion2, modelfilterstr
 
 
 #print(data)
-def generate_html_form(systems, models_all, data1=None, data2=None, modelsdata=None):
+def generate_html_form(platforms, models_all, data1=None, data2=None, modelsdata=None, categories=None):
     # Setting default values if not provided
     if not data1:
         data1 = ''
@@ -271,6 +271,7 @@ def generate_html_form(systems, models_all, data1=None, data2=None, modelsdata=N
 
     system1_options = generate_select_options(systems, data1)
     system2_options = generate_select_options(systems, data2)
+    category_options = generate_select_options(categories, "datacenter")
 
     # Create select options for models
     models_options = generate_select_options(models_all, modelsdata)
@@ -294,6 +295,13 @@ def generate_html_form(systems, models_all, data1=None, data2=None, modelsdata=N
             </select>
         </div>
 
+        <div class="form-field">
+            <label for="category">Category</label>
+            <select id="category" name="category" class="col">
+                {category_options}
+            </select>
+        </div>
+        
         <div class="form-field">
             <label for="models">Models</label>
             <select id="models" name="models[]" class="col" multiple>
@@ -341,8 +349,9 @@ data1 = None
 data2 = None
 modelsdata = None
 models_data = {v:k for v,k in enumerate(models_all)}
+categories = {v:k for v,k in enumerate(["Datacenter", "Edge"])}
 # Generate the HTML form
-html_form = generate_html_form(systems, models_data, data1, data2, modelsdata)
+html_form = generate_html_form(systems_data, models_data, data1, data2, modelsdata, categories)
 
 # Output the generated HTML
 out_html = f"""---

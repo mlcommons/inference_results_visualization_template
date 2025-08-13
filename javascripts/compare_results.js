@@ -112,6 +112,7 @@ $(document).ready(function() {
         //console.log('Form submission canceled.');
         var system1 = $('#system1 option:selected').text();
         var system2 = $('#system2 option:selected').text();
+        var selected_category = $('#category option:selected').text().toLowerCase();
         var selected_models = $('#models option:selected').map(function() {
             return $(this).text();
         }).get();
@@ -129,7 +130,7 @@ $(document).ready(function() {
 //            console.log(allData);
             sysversion1 = results_version;
             sysversion2 = results_version;
-            reConstructTables(system1, sysversion1, system2, sysversion2, selected_models, allData);
+            reConstructTables(system1, sysversion1, system2, sysversion2, selected_models, selected_category, allData);
         }).catch(function(error) {
             console.error(error);
         });
@@ -140,19 +141,19 @@ $(document).ready(function() {
 });
 
 // scenarios, system1, sysversion1, system2, sysversion2, data, ytitle_scenarios
-function reConstructTables(system1, sysversion1, system2, sysversion2, selected_models, data) {
+function reConstructTables(system1, sysversion1, system2, sysversion2, selected_models, selected_category, data) {
     myscenarios = [ "Offline", "Server", "Interactive", "SingleStream", "MultiStream"];
 
     // Split the system name to allign with results summary
-    submitter1 = system1.split(":")[0];
-    submitter2 = system2.split(":")[0];
-    system1 = system1.split(":")[1];
-    system2 = system2.split(":")[1];
+    submitter1 = system1.split(" : ")[0];
+    submitter2 = system2.split(" : ")[0];
+    system1 = system1.split(" : ")[1];
+    system2 = system2.split(" : ")[1];
     
     myscenarios.forEach(function(scenario) {
 
-    let keys = ["Scenario", "System", "version", "Submitter"];
-    let values = [scenario, system1, sysversion1, submitter1];
+    let keys = ["Scenario", "System", "version", "Submitter", "Suite"];
+    let values = [scenario, system1, sysversion1, submitter1, selected_category];
     //console.log(scenario);    
 
     //console.log(selected_models);
@@ -169,7 +170,7 @@ function reConstructTables(system1, sysversion1, system2, sysversion2, selected_
         return; // Continue to the next scenario
     }
 
-    values = [scenario, system2, sysversion2,  submitter2];
+    values = [scenario, system2, sysversion2,  submitter2, selected_category];
     let result2 = filterData(data, keys, values);
     if(!selected_models.includes("All models")) {
         result2 = filterDataFromValues(result2, "Model", selected_models);

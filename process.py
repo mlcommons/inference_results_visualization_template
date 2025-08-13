@@ -20,27 +20,42 @@ import os
 # Gets unique value from data based on particular key
 # For keys other than System, returns list 
 # and for system, it returns dictionary(id as key and 
-# submitter:system as value)
-def getuniquevalues(data, key):
+# submitter : system as value)
+def getuniquevalues(data, key, filters = {}):
     if str(key) == "System":
         result = {}
         for item in data:
-            system = item.get("System")
-            submitter = item.get("Submitter")
-            id = item.get("ID")
-            result[id] = f"{submitter} : {system}"
+            mismatch = False
+            for fkey,value in filters.items():
+                if item[fkey] != value:
+                    mismatch = True
+                    break
+            if not mismatch:
+                system = item.get("System")
+                submitter = item.get("Submitter")
+                id = item.get("ID")
+                result[id] = f"{submitter} : {system}"
         return result
     uniquevalues = []
     for item in data:
-        if item.get(key) and item.get(key) not in uniquevalues:
-            uniquevalues.append(item[key])
+        mismatch = False
+        for fkey,value in filters.items():
+            if item[fkey] != value:
+                mismatch = True
+        if not mismatch:
+            if item.get(key) and item.get(key) not in uniquevalues:
+                uniquevalues.append(item[key])
     return uniquevalues
 
 with open('summary_results.json') as f:
     data = json.load(f)
-models_all = getuniquevalues(data, "Model")
+filters = {
+    "Suite": "datacenter",
+    "Category": "closed"
+}
+models_all = getuniquevalues(data, "Model", filters)
 models_all.insert(0, "All models")
-systems = getuniquevalues(data, "System")
+systems = getuniquevalues(data, "System", filters)
 #print(models_all)
 #print(platforms)
 

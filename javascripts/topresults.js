@@ -201,7 +201,7 @@ function constructTable(division, scenario, model, metric, result) {
 
 
 function updateFilters(myData) {
-        var platforms = getUniqueValuesCombined(myData, " : ", [ "version", "Platform" ]);
+        var platforms = getUniqueValuesCombined(myData, " : ", [ "version", "Submitter", "System" ]);
         platforms.unshift("All systems");
         buildSelectOption(platforms, "filter_systems", "All systems");
 	var devices = getUniqueValuesCombined(myData, " x ", [ "Accelerator", "a#" ]);
@@ -416,14 +416,17 @@ $(document).ready(function() {
         if (!filter_systems.includes("All systems")) {
             systems = [];
             versions = [];
+            submitters = [];
             for(let filter_system of filter_systems) {
                 item = filter_system.split(" : ");
                 version = item[0];
-                system = item[1];
+                submitter = item[1];
+                system = item[2];
                 systems.push(system);
                 versions.push(version);
+                submitters.push(submitter)
             }
-            myData = filterDataBySystems(myData, systems, versions);
+            myData = filterDataBySystems(myData, systems, versions, submitters);
         }
 
 

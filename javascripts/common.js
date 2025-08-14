@@ -325,14 +325,14 @@ function filterDataByAccelerators(data, acc_names, acc_nums) {
   return filtered_data;
 }
 
-function filterDataBySystems(data, systems, versions) {
+function filterDataBySystems(data, systems, versions, submitters) {
   let filtered_data = [];
   if (!data) return filtered_data;
 
   data.forEach(function(item) {
     let mismatch = false;
     for(i=0; i< systems.length; i++) {
-      if((item['Platform'] == systems[i]) && (item['version'] == versions[i]))
+      if((item['System'] == systems[i]) && (item['version'] == versions[i]) && (item['Submitter'] == submitters[i]))
 	break;
     }
     if (i != systems.length) {

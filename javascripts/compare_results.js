@@ -97,7 +97,7 @@ function updateSystemDropdowns(selected_category, allData) {
     let index = 0;
 
     filteredSystems.forEach(function(item) {
-        let displayName = `${item.Submitter} : ${item.System}`;
+        let displayName = `${item.Submitter}: ${item.System}`;
         if (!seen.has(displayName)) {
             seen.add(displayName);
 
@@ -174,10 +174,10 @@ function reConstructTables(system1, sysversion1, system2, sysversion2, selected_
     myscenarios = [ "Offline", "Server", "Interactive", "SingleStream", "MultiStream"];
 
     // Split the system name to allign with results summary
-    submitter1 = system1.split(" : ")[0];
-    submitter2 = system2.split(" : ")[0];
-    system1 = system1.split(" : ")[1];
-    system2 = system2.split(" : ")[1];
+    submitter1 = system1.split(": ")[0];
+    submitter2 = system2.split(": ")[0];
+    system1 = system1.split(": ")[1];
+    system2 = system2.split(": ")[1];
     
     myscenarios.forEach(function(scenario) {
 

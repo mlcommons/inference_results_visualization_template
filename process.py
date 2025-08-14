@@ -20,7 +20,7 @@ import os
 # Gets unique value from data based on particular key
 # For keys other than System, returns list 
 # and for system, it returns dictionary(id as key and 
-# submitter : system as value)
+# submitter: system as value)
 def getuniquevalues(data, key, filters = {}):
     if str(key) == "System":
         result = {}
@@ -34,7 +34,7 @@ def getuniquevalues(data, key, filters = {}):
                 system = item.get("System")
                 submitter = item.get("Submitter")
                 id = item.get("ID")
-                result[id] = f"{submitter} : {system}"
+                result[id] = f"{submitter}: {system}"
         return result
     uniquevalues = []
     for item in data:

@@ -696,22 +696,22 @@ def get_table_header(division, category, scenarios_filter):
 """
 
     if "datacenter" in category:
-        if "server" in scenarios_filter:
+        if "Server" in scenarios_filter:
             html_table_head += f"""<th colspan="{colspan}">Server</th>
 """
-        if "interactive" in scenarios_filter:
+        if "Interactive" in scenarios_filter:
             html_table_head += f"""<th colspan="{colspan}">Interactive</th>
 """
 
-    if  "offline" in scenarios_filter:
+    if  "Offline" in scenarios_filter:
         html_table_head += f"""<th colspan="{colspan}">Offline</th>
 """
 
     if "edge" in category:
-        if  "singlestream" in scenarios_filter:
+        if  "SingleStream" in scenarios_filter:
             html_table_head += f"""<th colspan="{colspan}">SingleStream</th>
 """
-        if  "multistream" in scenarios_filter:
+        if  "MultiStream" in scenarios_filter:
             html_table_head +=  f"""<th colspan="{colspan}">MultiStream</th>
 """
     html_table_head += f"""</tr>

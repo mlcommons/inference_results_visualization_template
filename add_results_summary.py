@@ -676,7 +676,7 @@ def get_button_links(system, division):
 
     return html
 
-def get_table_header(division, category):
+def get_table_header(division, category, scenarios_filter):
     if division == "open":
         accuracy_achieved_header = '<th>Accuracy</th>'
         colspan = "3"
@@ -684,7 +684,7 @@ def get_table_header(division, category):
         accuracy_achieved_header = "" #dont show accuracy as submitters are only expected to achieve the target
         colspan = "2"
 
-    num_scenarios = 1
+    num_scenarios = len(scenarios_filter)
     html_stripe_svg = get_stripe_image()
     html_table_head = f"""{html_stripe_svg}
 <h3>Results Table</h3>
@@ -694,20 +694,25 @@ def get_table_header(division, category):
 <th rowspan="2" class="th-parent">Model</th>
 <th rowspan="2" class="th-parent">Accuracy Target</th>
 """
+
     if "datacenter" in category:
-        num_scenarios += 2
-        html_table_head += f"""<th colspan="{colspan}">Server</th>
+        if "server" in scenarios_filter:
+            html_table_head += f"""<th colspan="{colspan}">Server</th>
 """
-        html_table_head += f"""<th colspan="{colspan}">Interactive</th>
+        if "interactive" in scenarios_filter:
+            html_table_head += f"""<th colspan="{colspan}">Interactive</th>
 """
 
-    html_table_head += f"""<th colspan="{colspan}">Offline</th>
+    if  "offline" in scenarios_filter:
+        html_table_head += f"""<th colspan="{colspan}">Offline</th>
 """
 
     if "edge" in category:
-        num_scenarios += 2
-        html_table_head += f"""<th colspan="{colspan}">SingleStream</th>
-<th colspan="{colspan}">MultiStream</th>
+        if  "singlestream" in scenarios_filter:
+            html_table_head += f"""<th colspan="{colspan}">SingleStream</th>
+"""
+        if  "multistream" in scenarios_filter:
+            html_table_head +=  f"""<th colspan="{colspan}">MultiStream</th>
 """
     html_table_head += f"""</tr>
 <tr>
@@ -770,8 +775,15 @@ for details, entries in tables.items():
 
     for category in entries:
         for division, data in entries[category].items():
+            # scenario filter for creating headers
+            scenarios_filter = []
+            for model in data:
+                for scenario_tmp in data[model]:
+                    if scenario_tmp.lower() not in scenarios_filter:
+                        scenarios_filter.append(scenario_tmp.lower())
+                        
             button_links = get_button_links(details, division) 
-            html_table = get_table_header(division, category)
+            html_table = get_table_header(division, category, scenarios_filter)
             if division == "open":
                 colspan="3"
                 scenario_missing_td = "<td></td><td></td><td></td>"
@@ -783,7 +795,7 @@ for details, entries in tables.items():
                         
                 #if model in data:
                     mlperf_model = None
-                    for scen in [ "Offline", "Server", "SingleStream", "MultiStream" ]:
+                    for scen in [ "Offline", "Server", "Interactive", "SingleStream", "MultiStream" ]:
                         if scen in data[model]:
                             mlperf_model = data[model][scen]["Model"]
                             break

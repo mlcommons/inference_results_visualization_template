@@ -799,11 +799,11 @@ for details, entries in tables.items():
                     if scenario_tmp not in scenarios_filter:
                         scenarios_filter.append(scenario_tmp)
             
-            if division == "closed":
-                if category == "datacenter":
-                    scenarios_filter = list(set(scenarios_filter) | set(required_scenarios_datacenter))
-                else:
-                    scenarios_filter = list(set(scenarios_filter) | set(required_scenarios_edge))
+                if division == "closed":
+                    if category == "datacenter":
+                        scenarios_filter = list(set(scenarios_filter) | set(required_scenarios_datacenter))
+                    else:
+                        scenarios_filter = list(set(scenarios_filter) | set(required_scenarios_edge))
                         
             button_links = get_button_links(details, division) 
             html_table = get_table_header(division, category, scenarios_filter)

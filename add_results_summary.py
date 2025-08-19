@@ -778,9 +778,28 @@ for details, entries in tables.items():
             # scenario filter for creating headers
             scenarios_filter = []
             for model in data:
-                for scenario_tmp in data[model]:
-                    if scenario_tmp.lower() not in scenarios_filter:
-                        scenarios_filter.append(scenario_tmp.lower())
+                for scen in [ "Offline", "Server", "Interactive", "SingleStream", "MultiStream" ]:
+                    if scen in data[model]:
+                        mlperf_model = data[model][scen]["Model"]
+                        break
+                if not mlperf_model:
+                    continue
+                    
+                #version = data[model]["Offline"]["version"]
+                acc_target = checker.MODEL_CONFIG[version]["accuracy-target"][mlperf_model]
+                if mlperf_model in checker.MODEL_CONFIG[version]["required-scenarios-datacenter"]:
+                    required_scenarios_datacenter = checker.MODEL_CONFIG[version]["required-scenarios-datacenter"][mlperf_model]
+                else:
+                    required_scenarios_datacenter = []
+                if mlperf_model in checker.MODEL_CONFIG[version]["required-scenarios-edge"]:
+                    required_scenarios_edge = checker.MODEL_CONFIG[version]["required-scenarios-edge"][mlperf_model]
+                else:
+                    required_scenarios_edge = []
+            for scenario_tmp in data[model]:
+                if scenario_tmp not in scenarios_filter:
+                    scenarios_filter.append(scenario_tmp)
+            
+            scenarios_filter = list(set(scenarios_filter) | set(required_scenarios_datacenter) | set(required_scenarios_edge))
                         
             button_links = get_button_links(details, division) 
             html_table = get_table_header(division, category, scenarios_filter)

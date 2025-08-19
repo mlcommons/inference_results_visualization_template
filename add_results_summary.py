@@ -795,15 +795,15 @@ for details, entries in tables.items():
                     required_scenarios_edge = checker.MODEL_CONFIG[version]["required-scenarios-edge"][mlperf_model]
                 else:
                     required_scenarios_edge = []
-            for scenario_tmp in data[model]:
-                if scenario_tmp not in scenarios_filter:
-                    scenarios_filter.append(scenario_tmp)
+                for scenario_tmp in data[model]:
+                    if scenario_tmp not in scenarios_filter:
+                        scenarios_filter.append(scenario_tmp)
             
-            if division == "closed":
-                if category == "datacenter":
-                    scenarios_filter = list(set(scenarios_filter) | set(required_scenarios_datacenter))
-                else:
-                    scenarios_filter = list(set(scenarios_filter) | set(required_scenarios_edge))
+                if division == "closed":
+                    if category == "datacenter":
+                        scenarios_filter = list(set(scenarios_filter) | set(required_scenarios_datacenter))
+                    else:
+                        scenarios_filter = list(set(scenarios_filter) | set(required_scenarios_edge))
                         
             button_links = get_button_links(details, division) 
             html_table = get_table_header(division, category, scenarios_filter)
@@ -832,6 +832,10 @@ for details, entries in tables.items():
                         required_scenarios_datacenter = checker.MODEL_CONFIG[version]["required-scenarios-datacenter"][mlperf_model]
                     else:
                         required_scenarios_datacenter = []
+                    if mlperf_model in checker.MODEL_CONFIG[version]["optional-scenarios-datacenter"]:
+                        optional_scenarios_datacenter = checker.MODEL_CONFIG[version]["optional-scenarios-datacenter"][mlperf_model]
+                    else:
+                        optional_scenarios_datacenter = []
                     if mlperf_model in checker.MODEL_CONFIG[version]["required-scenarios-edge"]:
                         required_scenarios_edge = checker.MODEL_CONFIG[version]["required-scenarios-edge"][mlperf_model]
                     else:
@@ -859,24 +863,33 @@ for details, entries in tables.items():
                                 html_table += f"""<td class="accuracy">{round_dict_values(data[model]["Server"]["Accuracy"])}</td>"""
                             html_table += f"""<td class="units">{data[model]["Server"]["Performance_Units"]}</td> <td class="perf">{data[model]["Server"]["Performance_Result"]:.2f}</td>"""
                         else:
-                            if "Server" in required_scenarios_datacenter and division == "closed": #must be open
-                                html_table += scenario_missing_td
+                            if "Server" in scenarios_filter and division == "closed": #must be open
+                                if "Server" in required_scenarios_datacenter or "Server" in optional_scenarios_datacenter:
+                                    html_table += scenario_missing_td
+                                else:
+                                    html_table += f"""<td class="na" colspan="{colspan}"> N/A </td>"""
 
                         if "Interactive" in data[model]:
                             if division == "open":
                                 html_table += f"""<td class="accuracy">{round_dict_values(data[model]["Interactive"]["Accuracy"])}</td>"""
                             html_table += f"""<td class="units">{data[model]["Interactive"]["Performance_Units"]}</td> <td class="perf">{data[model]["Interactive"]["Performance_Result"]:.2f}</td>"""
                         else:
-                            if "Interactive" in required_scenarios_datacenter and division == "closed": #must be open
-                                html_table += scenario_missing_td
+                            if "Interactive" in scenarios_filter and division == "closed": #must be open
+                                if "Interactive" in required_scenarios_datacenter or "Interactive" in optional_scenarios_datacenter:
+                                    html_table += scenario_missing_td
+                                else:
+                                    html_table += f"""<td class="na" colspan="{colspan}"> N/A </td>"""
 
                     if "Offline" in data[model]:
                         if division == "open":
                             html_table += f"""<td class="accuracy">{round_dict_values(data[model]["Offline"]["Accuracy"])}</td>"""
                         html_table += f"""<td class="units">{data[model]["Offline"]['Performance_Units']}</td> <td class="perf">{data[model]["Offline"]["Performance_Result"]:.2f}</td>"""
                     else:
-                        if "Offline" in required_scenarios_datacenter and division == "closed": #must be open
-                            html_table += scenario_missing_td
+                        if "Offline" in scenarios_filter and division == "closed": #must be open
+                            if "Offline" in required_scenarios_datacenter:
+                                html_table += scenario_missing_td
+                            else:
+                                html_table += f"""<td class="na" colspan="{colspan}"> N/A </td>"""
 
                     if "edge" in category:
                         if "SingleStream" in data[model]:
@@ -885,8 +898,11 @@ for details, entries in tables.items():
                                 html_table += f"""<td class="accuracy">{round_dict_values(data[model][scenario]["Accuracy"])}</td>"""
                             html_table += f"""<td class="units">{data[model][scenario]["Performance_Units"]}</td> <td class="perf">{data[model][scenario]["Performance_Result"]:.2f}</td>"""
                         else:
-                            if "SingleStream" in required_scenarios_edge and division == "closed": #must be open
-                                html_table += scenario_missing_td
+                            if "SingleStream" in scenarios_filter and division == "closed": #must be open
+                                if "SingleStream" in required_scenarios_datacenter:
+                                    html_table += scenario_missing_td
+                                else:
+                                    html_table += f"""<td class="na" colspan="{colspan}"> N/A </td>"""
 
                         if "MultiStream" in data[model]:
                             scenario = "MultiStream"
@@ -894,8 +910,11 @@ for details, entries in tables.items():
                                 html_table += f"""<td class="accuracy">{round_dict_values(data[model][scenario]["Accuracy"])}</td>"""
                             html_table += f"""<td class="units">{data[model][scenario]["Performance_Units"]}</td> <td class="perf">{data[model][scenario]["Performance_Result"]:.2f}</td>"""
                         else:
-                            if "MultiStream" in required_scenarios_edge and division == "closed": #must be open
-                                html_table += scenario_missing_td
+                            if "MultiStream" in scenarios_filter and division == "closed": #must be open
+                                if "MultiStream" in required_scenarios_datacenter:
+                                    html_table += scenario_missing_td
+                                else:
+                                    html_table += f"""<td class="na" colspan="{colspan}"> N/A </td>"""
                 
                     #html_table += "<td></td> <td></td>"
                     #html_table += "<td></td> <td></td>"

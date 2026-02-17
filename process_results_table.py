@@ -326,7 +326,7 @@ Notes: {mydata[rid]['Notes']}
                 
                 if category == "edge": #Process SS and MS
                     html +=  get_scenario_result(mydata[rid][m], "SingleStream", location_pre, result_link_text)
-                    if m in ["resnet", "retinanet"]:
+                    if m in ["resnet", "retinanet", "yolo-95", "yolo-99"]:
                         html +=  get_scenario_result(mydata[rid][m], "MultiStream", location_pre, result_link_text)
             else:
                 html += f"""

@@ -600,7 +600,7 @@ $(document).ready(function() {
       <th class="col-scenario">${scenarioPerfUnits[model]['SingleStream']}</th>
       `;
         }
-        if(model.includes("resnet") || model.includes("retinanet")) {
+        if(model.includes("resnet") || model.includes("retinanet") || model.includes("yolo")) {
     if(scenarioPerfUnits[model].hasOwnProperty("MultiStream")) {
       model_header = model_header + `
         <th class="col-scenario" colspan="${colspan}">MultiStream</th>
@@ -940,7 +940,7 @@ $(document).ready(function() {
         const hasSingleStream = units.hasOwnProperty("SingleStream");
         const hasMultiStream = units.hasOwnProperty("MultiStream");
       
-        let span = model.includes("resnet") || model.includes("retinanet")
+        let span = model.includes("resnet") || model.includes("retinanet") || model.includes("yolo")
           ? (with_power ? 9 : 3)
           : (with_power
               ? (hasOffline + hasSingleStream + hasMultiStream) * 3
@@ -964,7 +964,7 @@ $(document).ready(function() {
         const hasSingleStream = units.hasOwnProperty("SingleStream");
         const hasMultiStream = units.hasOwnProperty("MultiStream");
       
-        if (model.includes("resnet") || model.includes("retinanet")) {
+        if (model.includes("resnet") || model.includes("retinanet") || model.includes("yolo")) {
           if (with_power) {
             tableheader += `
               <th class="col-scenario" colspan="3">Offline</th>

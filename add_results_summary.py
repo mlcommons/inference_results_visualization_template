@@ -19,7 +19,7 @@ import os
 import time
 import sys
 sys.path.insert(0, os.path.join("inference", "tools", "submission"))
-import submission_checker as checker # noqa
+import submission_checker.constants as checker_constants # noqa
 
 with open('summary_results.json') as f:
     data = json.load(f)
@@ -771,7 +771,7 @@ for details, entries in tables.items():
     #if "datacenter" in entries:
     #    models = [ "llama2-70b-99", "llama2-70b-99.9", "gptj-99", "gptj-99.9", "bert-99", "bert-99.9", "stable-diffusion-xl",  "dlrm-v2-99", "dlrm-v2-99.9", "retinanet", "resnet", "3d-unet-99", "3d-unet-99.9"  ]
 
-    models = checker.MODEL_CONFIG[version]["models"]
+    models = checker_constants.MODEL_CONFIG[version]["models"]
 
     for category in entries:
         for division, data in entries[category].items():
@@ -786,13 +786,13 @@ for details, entries in tables.items():
                     continue
                     
                 #version = data[model]["Offline"]["version"]
-                acc_target = checker.MODEL_CONFIG[version]["accuracy-target"][mlperf_model]
-                if mlperf_model in checker.MODEL_CONFIG[version]["required-scenarios-datacenter"]:
-                    required_scenarios_datacenter = checker.MODEL_CONFIG[version]["required-scenarios-datacenter"][mlperf_model]
+                acc_target = checker_constants.MODEL_CONFIG[version]["accuracy-target"][mlperf_model]
+                if mlperf_model in checker_constants.MODEL_CONFIG[version]["required-scenarios-datacenter"]:
+                    required_scenarios_datacenter = checker_constants.MODEL_CONFIG[version]["required-scenarios-datacenter"][mlperf_model]
                 else:
                     required_scenarios_datacenter = []
-                if mlperf_model in checker.MODEL_CONFIG[version]["required-scenarios-edge"]:
-                    required_scenarios_edge = checker.MODEL_CONFIG[version]["required-scenarios-edge"][mlperf_model]
+                if mlperf_model in checker_constants.MODEL_CONFIG[version]["required-scenarios-edge"]:
+                    required_scenarios_edge = checker_constants.MODEL_CONFIG[version]["required-scenarios-edge"][mlperf_model]
                 else:
                     required_scenarios_edge = []
                 for scenario_tmp in data[model]:
@@ -827,17 +827,17 @@ for details, entries in tables.items():
                     html_table += f"""<tr><td class="model">{model}</td>"""
                     
                     #version = data[model]["Offline"]["version"]
-                    acc_target = checker.MODEL_CONFIG[version]["accuracy-target"][mlperf_model]
-                    if mlperf_model in checker.MODEL_CONFIG[version]["required-scenarios-datacenter"]:
-                        required_scenarios_datacenter = checker.MODEL_CONFIG[version]["required-scenarios-datacenter"][mlperf_model]
+                    acc_target = checker_constants.MODEL_CONFIG[version]["accuracy-target"][mlperf_model]
+                    if mlperf_model in checker_constants.MODEL_CONFIG[version]["required-scenarios-datacenter"]:
+                        required_scenarios_datacenter = checker_constants.MODEL_CONFIG[version]["required-scenarios-datacenter"][mlperf_model]
                     else:
                         required_scenarios_datacenter = []
-                    if mlperf_model in checker.MODEL_CONFIG[version]["optional-scenarios-datacenter"]:
-                        optional_scenarios_datacenter = checker.MODEL_CONFIG[version]["optional-scenarios-datacenter"][mlperf_model]
+                    if mlperf_model in checker_constants.MODEL_CONFIG[version]["optional-scenarios-datacenter"]:
+                        optional_scenarios_datacenter = checker_constants.MODEL_CONFIG[version]["optional-scenarios-datacenter"][mlperf_model]
                     else:
                         optional_scenarios_datacenter = []
-                    if mlperf_model in checker.MODEL_CONFIG[version]["required-scenarios-edge"]:
-                        required_scenarios_edge = checker.MODEL_CONFIG[version]["required-scenarios-edge"][mlperf_model]
+                    if mlperf_model in checker_constants.MODEL_CONFIG[version]["required-scenarios-edge"]:
+                        required_scenarios_edge = checker_constants.MODEL_CONFIG[version]["required-scenarios-edge"][mlperf_model]
                     else:
                         required_scenarios_edge = []
 

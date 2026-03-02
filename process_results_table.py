@@ -305,10 +305,11 @@ Notes: {mydata[rid]['Notes']}
         a_num = mydata[rid]['a#']
         if a_num =='':
             acc = ""
-        elif a_num.strip().isdigit():
-            acc = f"{mydata[rid]['Accelerator']} x {int(a_num)}"
         else:
-            acc = f"{mydata[rid]['Accelerator']} - {a_num}"
+            try:
+                acc = f"{mydata[rid]['Accelerator']} x {int(a_num)}"
+            except (ValueError, TypeError):
+                acc = f"{mydata[rid]['Accelerator']} - {a_num}"
         system_json_link = f"""{mydata[rid]['Details'].replace("results", "systems")}.json"""
         html += f"""
         <tr>

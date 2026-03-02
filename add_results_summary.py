@@ -659,18 +659,12 @@ def convert_string_to_dict(input_string):
     return result_dict
 
 def get_button_links(system, division):
-    code_link = os.path.dirname(system.replace("/results/", "/code/"))
+    code_link = os.path.dirname(system.replace("/results/", "/src/"))
     results_link = system
-    measurements_link = system.replace("/results/", "/measurements/")
-    compliance_link = system.replace("/results/", "/compliance/")
 
     html = f"""<div class="button-container">
 <a href="{code_link}" class="button">Code</a>
 <a href="{results_link}" class="button">Result Logs</a>
-<a href="{measurements_link}" class="button">Measurements</a>
-"""
-    if division == "closed":
-        html += f"""<a href="{compliance_link}" class="button">Compliance</a>
 """
     html +="""</div>"""
 

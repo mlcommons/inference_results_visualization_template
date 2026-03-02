@@ -663,7 +663,7 @@ def get_button_links(system, division):
     results_link = system
 
     html = f"""<div class="button-container">
-<a href="{code_link}" class="button">Code</a>
+<a href="{code_link}" class="button">Src</a>
 <a href="{results_link}" class="button">Result Logs</a>
 """
     html +="""</div>"""

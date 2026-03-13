@@ -696,6 +696,9 @@ def get_table_header(division, category, scenarios_filter):
         if "Interactive" in scenarios_filter:
             html_table_head += f"""<th colspan="{colspan}">Interactive</th>
 """
+        if  "SingleStream" in scenarios_filter:
+            html_table_head += f"""<th colspan="{colspan}">SingleStream</th>
+"""
 
     if  "Offline" in scenarios_filter:
         html_table_head += f"""<th colspan="{colspan}">Offline</th>
@@ -870,6 +873,17 @@ for details, entries in tables.items():
                         else:
                             if "Interactive" in scenarios_filter and division == "closed": #must be open
                                 if "Interactive" in required_scenarios_datacenter or "Interactive" in optional_scenarios_datacenter:
+                                    html_table += scenario_missing_td
+                                else:
+                                    html_table += f"""<td class="na" colspan="{colspan}"> N/A </td>"""
+
+                        if "SingleStream" in data[model]:
+                            if division == "open":
+                                html_table += f"""<td class="accuracy">{round_dict_values(data[model]["SingleStream"]["Accuracy"])}</td>"""
+                            html_table += f"""<td class="units">{data[model]["SingleStream"]["Performance_Units"]}</td> <td class="perf">{data[model]["SingleStream"]["Performance_Result"]:.2f}</td>"""
+                        else:
+                            if "SingleStream" in scenarios_filter and division == "closed": #must be open
+                                if "SingleStream" in required_scenarios_datacenter or "SingleStream" in optional_scenarios_datacenter:
                                     html_table += scenario_missing_td
                                 else:
                                     html_table += f"""<td class="na" colspan="{colspan}"> N/A </td>"""

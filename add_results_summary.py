@@ -858,7 +858,7 @@ for details, entries in tables.items():
                         if "Server" in data[model]:
                             if division == "open":
                                 html_table += f"""<td class="accuracy">{round_dict_values(data[model]["Server"]["Accuracy"])}</td>"""
-                            html_table += f"""<td class="units">{data[model]["Server"]["Performance_Units"]}</td> <td class="perf">{data[model]["Server"]["Performance_Result"]:.2f}</td>"""
+                            html_table += f"""<td class="units">{data[model]["Server"]["Performance_Units"]}</td> <td class="perf">{data[model]["Server"]["Performance_Result"]:.3f}</td>"""
                         else:
                             if "Server" in scenarios_filter and division == "closed": #must be open
                                 if "Server" in required_scenarios_datacenter or "Server" in optional_scenarios_datacenter:
@@ -869,7 +869,7 @@ for details, entries in tables.items():
                         if "Interactive" in data[model]:
                             if division == "open":
                                 html_table += f"""<td class="accuracy">{round_dict_values(data[model]["Interactive"]["Accuracy"])}</td>"""
-                            html_table += f"""<td class="units">{data[model]["Interactive"]["Performance_Units"]}</td> <td class="perf">{data[model]["Interactive"]["Performance_Result"]:.2f}</td>"""
+                            html_table += f"""<td class="units">{data[model]["Interactive"]["Performance_Units"]}</td> <td class="perf">{data[model]["Interactive"]["Performance_Result"]:.3f}</td>"""
                         else:
                             if "Interactive" in scenarios_filter and division == "closed": #must be open
                                 if "Interactive" in required_scenarios_datacenter or "Interactive" in optional_scenarios_datacenter:
@@ -880,7 +880,7 @@ for details, entries in tables.items():
                         if "SingleStream" in data[model]:
                             if division == "open":
                                 html_table += f"""<td class="accuracy">{round_dict_values(data[model]["SingleStream"]["Accuracy"])}</td>"""
-                            html_table += f"""<td class="units">{data[model]["SingleStream"]["Performance_Units"]}</td> <td class="perf">{data[model]["SingleStream"]["Performance_Result"]:.2f}</td>"""
+                            html_table += f"""<td class="units">{data[model]["SingleStream"]["Performance_Units"]}</td> <td class="perf">{data[model]["SingleStream"]["Performance_Result"]:.3f}</td>"""
                         else:
                             if "SingleStream" in scenarios_filter and division == "closed": #must be open
                                 if "SingleStream" in required_scenarios_datacenter or "SingleStream" in optional_scenarios_datacenter:
@@ -891,7 +891,7 @@ for details, entries in tables.items():
                     if "Offline" in data[model]:
                         if division == "open":
                             html_table += f"""<td class="accuracy">{round_dict_values(data[model]["Offline"]["Accuracy"])}</td>"""
-                        html_table += f"""<td class="units">{data[model]["Offline"]['Performance_Units']}</td> <td class="perf">{data[model]["Offline"]["Performance_Result"]:.2f}</td>"""
+                        html_table += f"""<td class="units">{data[model]["Offline"]['Performance_Units']}</td> <td class="perf">{data[model]["Offline"]["Performance_Result"]:.3f}</td>"""
                     else:
                         if "Offline" in scenarios_filter and division == "closed": #must be open
                             if "Offline" in required_scenarios_datacenter:
@@ -904,7 +904,7 @@ for details, entries in tables.items():
                             scenario = "SingleStream"
                             if division == "open":
                                 html_table += f"""<td class="accuracy">{round_dict_values(data[model][scenario]["Accuracy"])}</td>"""
-                            html_table += f"""<td class="units">{data[model][scenario]["Performance_Units"]}</td> <td class="perf">{data[model][scenario]["Performance_Result"]:.2f}</td>"""
+                            html_table += f"""<td class="units">{data[model][scenario]["Performance_Units"]}</td> <td class="perf">{data[model][scenario]["Performance_Result"]:.3f}</td>"""
                         else:
                             if "SingleStream" in scenarios_filter and division == "closed": #must be open
                                 if "SingleStream" in required_scenarios_datacenter:
@@ -916,7 +916,7 @@ for details, entries in tables.items():
                             scenario = "MultiStream"
                             if division == "open":
                                 html_table += f"""<td class="accuracy">{round_dict_values(data[model][scenario]["Accuracy"])}</td>"""
-                            html_table += f"""<td class="units">{data[model][scenario]["Performance_Units"]}</td> <td class="perf">{data[model][scenario]["Performance_Result"]:.2f}</td>"""
+                            html_table += f"""<td class="units">{data[model][scenario]["Performance_Units"]}</td> <td class="perf">{data[model][scenario]["Performance_Result"]:.3f}</td>"""
                         else:
                             if "MultiStream" in scenarios_filter and division == "closed": #must be open
                                 if "MultiStream" in required_scenarios_datacenter:

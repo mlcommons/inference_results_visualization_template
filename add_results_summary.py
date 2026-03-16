@@ -877,17 +877,6 @@ for details, entries in tables.items():
                                 else:
                                     html_table += f"""<td class="na" colspan="{colspan}"> N/A </td>"""
 
-                        if "SingleStream" in data[model]:
-                            if division == "open":
-                                html_table += f"""<td class="accuracy">{round_dict_values(data[model]["SingleStream"]["Accuracy"])}</td>"""
-                            html_table += f"""<td class="units">{data[model]["SingleStream"]["Performance_Units"]}</td> <td class="perf">{data[model]["SingleStream"]["Performance_Result"]:.3f}</td>"""
-                        else:
-                            if "SingleStream" in scenarios_filter and division == "closed": #must be open
-                                if "SingleStream" in required_scenarios_datacenter or "SingleStream" in optional_scenarios_datacenter:
-                                    html_table += scenario_missing_td
-                                else:
-                                    html_table += f"""<td class="na" colspan="{colspan}"> N/A </td>"""
-
                     if "Offline" in data[model]:
                         if division == "open":
                             html_table += f"""<td class="accuracy">{round_dict_values(data[model]["Offline"]["Accuracy"])}</td>"""
@@ -898,6 +887,18 @@ for details, entries in tables.items():
                                 html_table += scenario_missing_td
                             else:
                                 html_table += f"""<td class="na" colspan="{colspan}"> N/A </td>"""
+
+                    if "datacenter" in category:
+                        if "SingleStream" in data[model]:
+                            if division == "open":
+                                html_table += f"""<td class="accuracy">{round_dict_values(data[model]["SingleStream"]["Accuracy"])}</td>"""
+                            html_table += f"""<td class="units">{data[model]["SingleStream"]["Performance_Units"]}</td> <td class="perf">{data[model]["SingleStream"]["Performance_Result"]:.3f}</td>"""
+                        else:
+                            if "SingleStream" in scenarios_filter and division == "closed": #must be open
+                                if "SingleStream" in required_scenarios_datacenter or "SingleStream" in optional_scenarios_datacenter:
+                                    html_table += scenario_missing_td
+                                else:
+                                    html_table += f"""<td class="na" colspan="{colspan}"> N/A </td>"""
 
                     if "edge" in category:
                         if "SingleStream" in data[model]:
